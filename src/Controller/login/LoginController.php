@@ -1,0 +1,158 @@
+<?php
+
+namespace App\Controller\login;
+
+use App\Entity\User;
+use App\Form\RegistrationFormType;
+use App\Repository\UserRepository;
+use App\Security\EmailVerifier;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
+
+#[Route('/auth')]
+final class LoginController extends AbstractController
+{
+    #[Route('/', name: 'app_redirect_login')]
+    public function redirect_login(): Response
+    {
+        return $this->redirectToRoute('app_login');
+    }
+    #[Route('/login', name: 'app_login')]
+    public function index(AuthenticationUtils $UA): Response
+    {       //AuthenticationUtils c'est ça qui récupère en session les informations de la dernière tentative de connexion/authentification
+            //En l'occurence il récupère le dernier email entré et le dernier message d'erreur
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_welcome');
+        }
+
+
+        return $this->render('login/index.html.twig', [
+            'error' => $UA->getLastAuthenticationError(),
+            "last_email" => $UA->getLastUsername(),
+        ]);
+    }
+    #[Route('/logout', name: 'app_logout')]
+    public function logout(): void
+    {
+            throw new \LogicException('Si ce message est vu il y a un problème');
+    }
+    #[Route('/register', name: 'app_register')]
+    public function register(
+        EntityManagerInterface $em, 
+        Request $request, 
+        UserPasswordHasherInterface $hasher, 
+        EmailVerifier $emailVerifier): Response
+    {
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_welcome');
+        }
+        $user = new User();
+        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Comme le mot de passe est un RepeatedType, on fait un autre get pour accéder au premier input mdp.
+            $password = $form->get('password')->get('first')->getData();
+
+            $user->setPassword($hasher->hashPassword($user, $password));
+            $user->setjoinedAt( new \DateTimeImmutable());
+            $user->setIsVerified(false);
+            $user->setRoles(["ROLE_USER"]);
+
+            $em->persist($user);
+            $em->flush();
+
+            try{
+            $emailVerifier->sendEmailConfirmation('app_verify_email', $user,
+                (new TemplatedEmail())
+                    ->from(new Address('SushiFactory@SF.com', 'MrSakana'))
+                    ->to($user->getEmail())
+                    ->subject('Veuillez verifier votre email')
+                    ->htmlTemplate('login/confirmation_email.html.twig')
+            );
+            $this->addFlash("info","Un lien vous a été envoyé sur votre email.");
+            } catch (\Exception $e) {
+                    dd('Exception: ' . $e->getMessage() . ' dans ' . $e->getFile() . ' ligne ' . $e->getLine());
+            }
+            return $this->redirectToRoute('app_login');
+        }
+        
+        return $this->render('login/register.html.twig', [
+            'form' => $form->createView(),
+            'form_message_error' => $form->isSubmitted() && !$form->isValid(),
+        ]);
+    }
+   #[Route('/verify/email', name: 'app_verify_email')]
+    public function verifyUserEmail(Request $request, TranslatorInterface $translator, EmailVerifier $emailVerifier, UserRepository $UR): Response
+    {
+
+        $id = $request->query->get('id');
+        // if (!$id) {
+        //     return $this->redirectToRoute('app_login');
+        // }
+        $user = $UR->find($id);
+        // if (!$user) {
+        //     return $this->redirectToRoute('app_login');
+        // }
+
+        try {
+            $emailVerifier->handleEmailConfirmation($request, $user); //en temps normal $this->getUser() suffit mais comme l'utilisateur n'est pas connecté on cherche le user par son ID
+        } catch (VerifyEmailExceptionInterface $exception) {
+            $this->addFlash('verify_email_error', $translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
+
+            return $this->redirectToRoute('app_login');
+        }
+
+        $this->addFlash('success', 'Votre email a été confirmé.');
+
+        return $this->redirectToRoute('app_login');
+    }
+
+
+    #[Route('/forgot-password', name: 'app_forgot_password')]
+    public function forgotPassword(): Response
+    {
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_welcome');
+        }
+        return $this->render('login/forgot_password.html.twig');
+    }
+
+    #[Route('/forgot-password/confirmation', name: 'app_forgot_password_confirmation')]
+    public function forgotPasswordConfirmation(): Response
+    {
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_welcome');
+        }
+        return $this->render('login/forgot_password_confirmation.html.twig');
+    }
+
+    #[Route('/reset-password/{token}', name: 'app_reset_password')]
+    public function resetPassword(string $token): Response
+    {
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_welcome');
+        }
+        return $this->render('login/reset_password.html.twig', [
+            'token' => $token,
+        ]);
+    }
+
+    #[Route('/reset-password/success', name: 'app_reset_password_success')]
+    public function resetPasswordSuccess(): Response
+    {
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_welcome');
+        }
+        return $this->render('login/reset_password_success.html.twig');
+    }
+}

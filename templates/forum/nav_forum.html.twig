@@ -1,0 +1,11 @@
+<div>
+        <h1 class="mb-1 fs-3 fw-bold">Forum d'entreprise</h1>
+        <p>Discutez, partagez et collaborez avec vos collègues.</p>
+</div>
+
+<nav class="d-flex gap-5 mt-4 justify-content-start align-items-center">
+    <a href="{{path('app_forum_public')}}" class="{{ app.request.attributes.get('_route') == 'app_forum_public' ? 'active' : '' }} nav_forum"><i class="fa-solid fa-globe"></i>  Public</a>
+    <a href="{{path('app_forum_private')}}" class="{{ app.request.attributes.get('_route') == 'app_forum_private' ? 'active' : '' }} nav_forum"><i class="fa-solid fa-lock"></i>  Réunion</a>
+    <a href="{{path('app_forum_announcements')}}" class="{{ app.request.attributes.get('_route') == 'app_forum_announcements' ? 'active' : '' }} nav_forum"><i class="fa-solid fa-bullhorn"></i>  Annonces</a>
+</nav>
+<hr>

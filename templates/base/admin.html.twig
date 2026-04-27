@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>
+			{% block title %}Not filled
+			{% endblock %}
+		</title>
+		{# Webpack Encore #}
+		{{ encore_entry_script_tags('app') }}
+		{{ encore_entry_link_tags('app') }}
+
+		{# Google Font #}
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+		<link
+		rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+		{# Jquery #}
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	</head>
+	<body class="">
+		<header
+			class="sticky-top">
+
+			{# Navigation #}
+			<nav class="navbar navbar-expand-lg bg_admin_color sticky-top">
+				<div class="container-fluid bg_admin_color">
+					<a class="navbar-brand text-white" href="{{path('app_welcome')}}"><img src="{{asset('images/Logo.png')}}" class="img_brand" alt="Logo_Susho">
+						Sushi Factory AdminSpace</a>
+					<div class="collapse navbar-collapse" id="navbarNav">
+						<ul class="navbar-nav ms-auto border-radius d-flex align-items-center">
+							<li class="nav-item d-flex align-items-center">
+								<a class="nav-link holder_nav text-center align-content-center {{ app.request.attributes.get('_route') == 'app_welcome' ? 'activated' : '' }}" href="{{path('app_welcome')}}">
+									<i class="fa-solid fa-house"></i>
+									Public</a>
+							</li>
+							<li class="nav-item d-flex align-items-center">
+								<div class="vr"></div>
+							</li>
+							<li class="d-flex mb-1 ms-2 align-items-center">
+								<div class="d-flex flex-column justify-content-center align-items-center">
+									<a class="nav_link_mon_profile holder_profile" href="">Profile_Nom_Prénom</a>
+									<a class="nav_link_mon_profile holder_logout" href="">
+										<i class="fa-solid fa-arrow-right-from-bracket fa-flip-horizontal"></i>
+										Se Déconnecter</a>
+								</div>
+								<div class="ms-lg-3 box_img_profile">
+									<a href="" class="d-flex justify-content-center align-items-center"><img class="img_profile" src="{{asset('images/Logo_2.png')}}" alt=""></a>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div class="d-lg-none">
+						<button class="burger_menu">
+							<div>
+								<i class="fa-solid fa-bars fa-2xl"></i>
+							</div>
+						</button>
+					</div>
+				</div>
+			</nav>
+			<div class="navmenu_admin d-lg-none">
+				<div class="">
+					<a class="holder_nav d-block {{ app.request.attributes.get('_route') == 'app_welcome' ? 'activated' : '' }}" href="{{path('app_welcome')}}">
+						<i class="fa-solid fa-house"></i>
+						Accueil</a>
+				</div>
+				<hr>
+				<div class="">
+					<a class="holder_nav log_out d-block" href="{{path('app_logout')}}">
+						<i class="fa-solid fa-arrow-right-from-bracket"></i>
+						Se Déconnecter</a>
+				</div>
+			</div>
+		</header>
+		{# Main #}
+		<main class="d-flex mb-0">
+			<div
+				class="row g-0 flex-grow-1 h-100">
+				{# Admin Nav SideBar #}
+				<div class="responsive_admin_nav col-12 col-lg-3 h-100">
+					<div class="admin_side_bar d-flex justify-content-start justify-content-lg-center vh-100">
+						<div class="bg_admin_color box_admin_nav">
+							<div class="d-flex flex-column align-items-center">
+								<p class="side_bar_responsive_admin_nav text-white text-center pt-3 fw-bold">Administration</p>
+								<div class="bg-secondary rounded-4 w-75 p-3">
+									<a class="holder_nav d-block text-start py-lg-2 px-lg-2 my-lg-1" href="{{path('app_employes')}}">
+										<i class="fa-solid fa-users"></i>
+										Employés</a>
+									<a class="holder_nav d-block text-start py-lg-2 px-lg-2 my-lg-1" href="{{path('app_salles')}}">
+										<i class="fa-brands fa-buromobelexperte"></i>
+										Salles</a>
+									<a class="holder_nav d-block text-start py-lg-2 px-lg-2 my-lg-1" href="{{path('app_reservations')}}">
+										<i class="fa-solid fa-calendar-days"></i>
+										Réservations</a>
+									<a class="holder_nav d-block text-start py-lg-2 px-lg-2 my-lg-1" href="{{path('app_forum')}}">
+										<i class="fa-solid fa-comments"></i>
+										Forum</a>
+									<a class="holder_nav d-block text-start py-lg-2 px-lg-2 my-lg-1" href="{{path('app_equipement')}}">
+										<i class="fa-solid fa-desktop"></i>
+									</i>
+									Equipement</a>
+							</div>
+						</div>
+					</div>
+					<div class="d-lg-none">
+						<div class="btn_responsive_admin_nav mt-1 text-white">
+							<i class="admin_arrow fa-solid fa-play fa-xl"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+			{# Content #}
+			<div class="col-12 col-lg-9 bg-light">
+				{% block main %}
+					<h1 class="text-center mt-5">Not Filled</h1>
+				{% endblock %}
+			</div>
+		</div>
+	</body>
+</html></main><footer class="border border-secondary-subtle z-1">
+<div class="container d-flex justify-content-between align-items-start mt-4">
+	<div>
+		<p><img src="{{asset('images/Logo.png')}}" class="img_footer" alt="Logo_Sushi">
+			SushiFactory AdminSpace</p>
+		<div>
+			<p>Currently v1.0.1</p>
+		</div>
+	</div>
+	<div class="d-flex gap-5">
+		<div>
+			<h4>Liens Utiles</h4>
+			<a class="d-block" href="#">Mentions légales</a>
+			<a class="d-block" href="#">Politique de confidentialité</a>
+		</div>
+		<div>
+			<h4>Réseaux</h4>
+			<a href="#" target="_blank">
+				<i class="fa-brands fa-linkedin"></i>
+			</a>
+			<a href="#" target="_blank">
+				<i class="fa-brands fa-x-twitter"></i>
+			</a>
+		</div>
+	</div>
+</div>
+<hr>
+<div class="d-flex justify-content-center">
+	<p class="©">© 2026 SushiFactory Enterprise. Tous droits réservés.</p>
+</div></footer></body></html>

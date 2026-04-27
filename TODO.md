@@ -21,3 +21,16 @@ Ainsi que twig/inky-extra et twig/markdown-extra pour faire fonctionner les comm
 - ```symfony console lint:container```(Vérifier les containers, que les classes n'ont pas d'erreurs d'appelle dans le namespace ou de chemins)
 
 - ```symfony console lint:yaml config``` (Vérifier les fichiers yalm)
+
+ 
+- J'ai aussi installé Node.js pour pour pouvoir utiliser vue.JS (plus simple pour l'affichage de l'agenda)
+
+- J'ai installé le package "symfonycasts/reset-password-bundle" avec composer ```composer require symfonycasts/reset-password-bundle```
+C'est un package qui gère toute la logique derrière un changement de mot de pass (Génération de token, expiration, validation)
+
+- ```composer require --dev doctrine/doctrine-fixtures-bundle``` pour installer des fixtures. Des comptes temporaires de testes qu'on fait avec ```symfony console make:fixtures```, cela crée le fichier de test que je remplis. Une fois remplie je lance ```symfony console doctrine:fixtures:load```
+
+-```composer require symfonycasts/verify-email-bundle``` c'est le bundle qui gère la vérification d'email en envoyant un mail de vérification.
+D'ailleurs j'ai beaucoup galérer pour un problème d'envoie d'email asynchrone via le formulaire et le bundle.
+Le fichier ```messenger.yaml``` une ligne du routing envoyait des emails de manière asynchrone (Apparemment ajouté à une liste qui peut être rendu par la suite).
+J'ai commenté la ligne pour que les envois soient automatique.

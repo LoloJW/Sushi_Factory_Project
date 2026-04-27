@@ -3,9 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
@@ -17,24 +20,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Assert\NotBlank(message: "L'email est obligatoire")]
+    #[Assert\Email(message: "L'email doit avoir un format valide")]
     private ?string $email = null;
 
-    /**
-     * @var list<string> The user roles
-     */
     #[ORM\Column]
     private array $roles = [];
 
-    /**
-     * @var string The hashed password
-     */
     #[ORM\Column]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank (message: "Le prénom est obligatoire")]
+    #[Assert\Length(min: 2, max: 30, minMessage: "Le prénom doit avoir au moins 2 caractères", maxMessage: "Le prénom doit avoir au plus 30 caractères")]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank (message: "Le nom est obligatoire")]
+    #[Assert\Length(min: 2, max: 30, minMessage: "Le nom doit avoir au moins 2 caractères", maxMessage: "Le nom doit avoir au plus 30 caractères")]
     private ?string $lastName = null;
 
     #[ORM\Column]
@@ -42,6 +45,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?bool $isVerified = null;
+
+    /**
+     * @var Collection<int, ReservationRoom>
+     */
+    #[ORM\OneToMany(targetEntity: ReservationRoom::class, mappedBy: 'user')]
+    private Collection $reservationRooms;
+
+    /**
+     * @var Collection<int, Subject>
+     */
+    #[ORM\OneToMany(targetEntity: Subject::class, mappedBy: 'user')]
+    private Collection $subjects;
+
+    /**
+     * @var Collection<int, Post>
+     */
+    #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'user')]
+    private Collection $posts;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $imgProfile = null;
+
+    public function __construct()
+    {
+        $this->reservationRooms = new ArrayCollection();
+        $this->subjects = new ArrayCollection();
+        $this->posts = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -168,6 +199,108 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ReservationRoom>
+     */
+    public function getReservationRooms(): Collection
+    {
+        return $this->reservationRooms;
+    }
+
+    public function addReservationRoom(ReservationRoom $reservationRoom): static
+    {
+        if (!$this->reservationRooms->contains($reservationRoom)) {
+            $this->reservationRooms->add($reservationRoom);
+            $reservationRoom->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReservationRoom(ReservationRoom $reservationRoom): static
+    {
+        if ($this->reservationRooms->removeElement($reservationRoom)) {
+            // set the owning side to null (unless already changed)
+            if ($reservationRoom->getUser() === $this) {
+                $reservationRoom->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Subject>
+     */
+    public function getSubjects(): Collection
+    {
+        return $this->subjects;
+    }
+
+    public function addSubject(Subject $subject): static
+    {
+        if (!$this->subjects->contains($subject)) {
+            $this->subjects->add($subject);
+            $subject->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubject(Subject $subject): static
+    {
+        if ($this->subjects->removeElement($subject)) {
+            // set the owning side to null (unless already changed)
+            if ($subject->getUser() === $this) {
+                $subject->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    public function addPost(Post $post): static
+    {
+        if (!$this->posts->contains($post)) {
+            $this->posts->add($post);
+            $post->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePost(Post $post): static
+    {
+        if ($this->posts->removeElement($post)) {
+            // set the owning side to null (unless already changed)
+            if ($post->getUser() === $this) {
+                $post->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getImgProfile(): ?string
+    {
+        return $this->imgProfile;
+    }
+
+    public function setImgProfile(?string $imgProfile): static
+    {
+        $this->imgProfile = $imgProfile;
 
         return $this;
     }

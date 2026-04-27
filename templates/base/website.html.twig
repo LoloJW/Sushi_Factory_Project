@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>{% block title %}Not filled{% endblock %}
+		</title>
+		{# Webpack Encore #}
+		{{ encore_entry_script_tags('app') }}
+		{{ encore_entry_link_tags('app') }}
+
+		{# Google Font #}
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link
+		href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+        {# Jquery #}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	</head>
+	<body class="">
+        <header class="sticky-top hidden-overflow">
+            <nav class="navbar navbar-expand-lg  bg-info sticky-top">
+                <div class="container-fluid">
+                    <a class="navbar-brand text-white" href="{{path('app_welcome')}}"><img src="{{asset('images/Logo.png')}}" class="img_brand" alt="Logo_Susho"> Sushi Factory</a>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto border-radius d-flex align-items-center">
+                            <li class="nav-item d-flex align-items-center">
+                                <a class="nav-link holder_nav text-center align-content-center {{ app.request.attributes.get('_route') == 'app_welcome' ? 'activated' : '' }}" href="{{path('app_welcome')}}"><i class="fa-solid fa-house"></i> Accueil</a>
+                            </li>
+                            <li class="nav-item d-flex align-items-center">
+                                <a class="nav-link holder_nav text-center align-content-center {{ app.request.attributes.get('_route') == 'app_reserve' ? 'activated' : '' }}" href="{{path('app_reserve')}}"><i class="fa-solid fa-calendar-days"></i> Réservation</a>
+                            </li>
+                            <li class="nav-item d-flex align-items-center">
+                                <a class="nav-link holder_nav text-center align-content-center {{ app.request.attributes.get('_route') == 'app_forum_public' ? 'activated' : '' }}" href="{{path('app_forum_public')}}"><i class="fa-solid fa-comments"></i> Forum</a>
+                            </li>
+                            <li class="nav-item d-flex align-items-center">
+                                <a class="nav-link holder_nav text-center align-content-center {{ app.request.attributes.get('_route') == 'app_my_profile' ? 'activated' : '' }}" href="{{path('app_my_profile')}}"><i class="fa-solid fa-user"></i> Mon Profil</a>
+                            </li>
+                            <li class="nav-item d-flex align-items-center">
+                                <div class="vr"></div>
+                            </li>
+
+                            {% if is_granted('ROLE_ADMIN')%}
+                            
+                            <li class="nav-item d-flex align-items-center">
+                                <a class="nav-link holder_nav text-center align-content-center" href="{{path('app_administration')}}"><i class="fa-solid fa-shield-halved"></i> Administration</a>
+                            </li>
+                            <li class="nav-item d-flex align-items-center">
+                                <div class="vr"></div>
+                            </li>
+                            
+                            {% endif %}
+                            <li class="d-flex ms-2 align-items-center">
+                                <div class="d-flex flex-column justify-content-center align-items-center">
+                                    <a class="nav_link_mon_profile holder_profile" href="{{path('app_my_profile')}}">{{app.user.firstName}} {{app.user.lastName}}</a>
+                                    <a class="nav_link_mon_profile holder_logout" href="{{path('app_logout')}}"><i class="fa-solid fa-arrow-right-from-bracket fa-flip-horizontal"></i> Se Déconnecter</a>
+                                </div>
+                                <div class="ms-lg-3 box_img_profile">
+                                    <a href="{{path('app_my_profile')}}" class="d-flex justify-content-center align-items-center"><img class="img_profile" src="{{asset('images/Logo_2.png')}}" alt=""></a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="d-lg-none">
+                        <button class="burger_menu">
+                            <div><i class="fa-solid fa-bars fa-2xl"></i></div>
+                        </button>
+                    </div>
+                </div>
+            </nav>
+                <div class="navmenu d-lg-none">
+                    <div class=""><a class="holder_nav d-block {{ app.request.attributes.get('_route') == 'app_welcome' ? 'activated' : '' }}" href="{{path('app_welcome')}}"><i class="fa-solid fa-house"></i> Accueil</a></div>
+                    <div class=""><a class="holder_nav d-block {{ app.request.attributes.get('_route') == 'app_reserve' ? 'activated' : '' }}" href="{{path('app_reserve')}}"><i class="fa-solid fa-calendar-days"></i> Réservation</a></div>
+                    <div class=""><a class="holder_nav d-block {{ app.request.attributes.get('_route') == 'app_forum_public' ? 'activated' : '' }}" href="{{path('app_forum_public')}}"><i class="fa-solid fa-comments"></i> Forum</a></div>
+                    <div class=""><a class="holder_nav d-block {{ app.request.attributes.get('_route') == 'app_my_profile' ? 'activated' : '' }}" href="{{path('app_my_profile')}}"><i class="fa-solid fa-user"></i> Mon Profil</a></div>
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <div class=""><a class="holder_nav d-block {{ app.request.attributes.get('_route') == 'app_administration' ? 'activated' : '' }}" href="{{path('app_administration')}}"><i class="fa-solid fa-shield-halved"></i> Administration</a></div>
+                    {% endif %}
+                    <hr>
+                    <div class=""><a class="holder_nav log_out d-block" href="{{ path('app_logout') }}"><i class="fa-solid fa-arrow-right-from-bracket"></i> Se Déconnecter</a></div>
+                </div>
+        </header>
+        <main class="mt-3 mt-md-4 mt-lg-5 mx-lg-5 mx-md-3 mx-2 h-100">
+            {% block main %} <h1 class="text-center mt-5">Not Filled</h1> {% endblock %}
+        </main>
+        <footer class="mt-4 border border-secondary-subtle">
+            <div class="container d-flex justify-content-between align-items-start mt-4">
+                <div>
+                    <p><img src="{{asset('images/Logo.png')}}" class="img_footer" alt="Logo_Susho"> SushiFactory</p>
+                    <div>
+                        <p>Currently v1.0.1</p>
+                    </div>
+                </div>
+                <div class="d-flex gap-5">
+                    <div>
+                        <h4>Liens Utiles</h4>
+                        <a class="d-block" href="#">Mentions légales</a>
+                        <a class="d-block" href="#">Politique de confidentialité</a>
+                    </div>
+                    <div>
+                        <h4>Réseaux</h4>
+                        <a href="#" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="#" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-center">
+                <p class="©">© 2026 SushiFactory Enterprise. Tous droits réservés.</p>
+            </div>
+        </footer>
+	</body>
+</html>

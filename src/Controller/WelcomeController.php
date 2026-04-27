@@ -8,9 +8,14 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class WelcomeController extends AbstractController
 {
-    #[Route('/', name: 'app_welcome')]
+    #[Route('/', name: 'app_redirect_login_welcome')]
+    public function redirect_login_welcome(): Response
+    {
+        return $this->redirectToRoute('app_login');
+    }
+    #[Route('/welcome', name: 'app_welcome')]
     public function index(): Response
     {
-        return $this->render('welcome/index.html.twig');
+       return $this->render("welcome/index.html.twig");
     }
 }

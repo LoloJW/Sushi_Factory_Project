@@ -1,0 +1,40 @@
+{% extends "base/login.html.twig" %}
+{% block main %}
+<div class="d-flex justify-content-center align-items-start box_form">
+    <div class="form_center shadow px-2">
+        <div class="d-flex justify-content-start"><h2 class="fw-bold">Connexion</h2></div>
+                {% if error %}
+                    <span class="text-danger fw-bold">{{error.message}}</span>
+                {% endif %}
+                {% for message in app.flashes('success') %}
+                    <span class="text-success fw-bold">{{message}}</span>
+                {% endfor %}
+                {% for message in app.flashes('info') %}
+                    <span class="text-primary fw-bold">{{message}}</span>
+                {% endfor %}
+        <div class="middle_form">
+            <form class="w-100" action="{{path('app_login')}}" method="post">
+                <div class="d-flex flex-column div_input">
+                    <label for="email" class="mb-2">Email</label>
+                    <input type="email" name="email" id="email" value="{% if error %}{{last_email}}{% endif %}">
+                </div>
+                <div class="d-flex flex-column div_input mt-3">
+                    <label for="password" class="mb-2">Mot de passe</label>
+                    <input type="password" name="password" id="password">
+                </div>
+                <input type="hidden" name="_csrf_token" value="{{csrf_token('authenticate')}}">
+                <div class="w-100"><button type="submit" class="btn btn-success text-white w-100 text-center align-content-center fw-bold enter-login mt-4">Se Connecter</button></div>
+            </form>
+        </div>
+        <div>
+            <div class="text-center mt-4">
+                <a href="{{path('app_forgot_password')}}">Mot de passe oublié ?</a>
+            </div>
+            <hr class="my-4">
+            <div class="">
+                <span>Pas encore inscript ?</span><a href="{{path('app_register')}}"> Veuillez vous inscrire</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

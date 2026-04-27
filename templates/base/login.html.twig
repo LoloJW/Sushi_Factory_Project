@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>{% block title %}Not filled{% endblock %}
+		</title>
+		{# Webpack Encore #}
+		{{ encore_entry_script_tags('app') }}
+		{{ encore_entry_link_tags('app') }}
+
+		{# Google Font #}
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link
+		href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+        {# Jquery #}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	</head>
+	<body class="body_login">
+		<div class="d-flex justify-content-center align-items-end brand_logo_connexion">
+			<div class="box_brand_login rounded-pill border-secondary mb-2 border bg-white shadow text-center align-content-center">
+				<h1 class="fw-bold"><img class="img_login" src="{{asset('images/Logo.png')}}" alt="Logo_Sushi"> SushiFactory</h1>
+			</div>
+		</div>
+            {% block main %} 
+			<span>Not Filled</span> 
+            {% endblock %}
+	</body>
+</html>

@@ -1,0 +1,679 @@
+/* assets/styles/app.scss */
+
+// 1. Variables constantes
+$success: #00bba7;
+$warning: #00786F;
+$primary: #115E59;   /* Couleur algue */
+$info: #104f4b;
+$secondary: #0c3f3c;
+$pikachu: #0a3330;
+
+// 2. Importez Bootstrap ensuite
+// Le "~" indique à Webpack de regarder dans node_modules
+@import "~bootstrap/scss/bootstrap";
+
+// 3. CSS
+
+
+// ============================================================
+// BASE
+// ============================================================
+* {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  text-decoration: none;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(241, 241, 241);
+}
+
+main {
+  flex: 1;
+  margin-bottom: 2rem;
+}
+
+label {
+  font-weight: 600;
+}
+
+input {
+  border: solid rgb(211, 221, 249);
+  height: 50px;
+  border-radius: 10px;
+  background-color: #f8fafc;
+  width: 100%;
+  padding: 0 10px;
+}
+
+input:focus {
+  border: solid;
+  border-color: rgb(0, 187, 167);
+  outline: none;
+}
+
+select:focus {
+  border: solid;
+  border-color: rgb(0, 187, 167);
+  outline: none;
+}
+
+.div_input {
+  width: 100%;
+}
+
+a {
+  color: $success;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+hr {
+  margin: 5px 0;
+}
+
+// ============================================================
+// GLOBAL
+// ============================================================
+.min-height {
+  min-height: 400px;
+}
+
+.max-width {
+  max-width: 1575px;
+  margin: 0 auto;
+}
+
+.vr {
+  color: #ffffff;
+  width: 3px;
+  min-height: 50px;
+}
+
+.bg_admin_color {
+  background-color: $pikachu;
+}
+
+// ============================================================
+// LOGIN PAGE
+// ============================================================
+.body_login {
+  grid-template-rows: auto 1fr;
+  background: linear-gradient(90deg, rgb(242, 253, 251), rgb(248, 243, 249));
+}
+
+.img_login {
+  height: 100px;
+  width: 100px;
+}
+
+.brand_logo_connexion {
+  height: auto;
+  margin-top: 10px;
+}
+
+.box_brand_login {
+  height: 100px;
+  padding-right: 20px;
+}
+.form_errors > ul {
+  color: red;
+  margin: 0;
+  
+}
+.form_center {
+  border: solid #e2e8f0;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: auto;
+  width: 40rem;
+  margin-top: 2rem;
+  padding: 3rem;
+  border-radius: 25px;
+}
+
+.middle_form {
+  height: 65%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: start;
+  padding: 0 3rem;
+}
+
+.enter-login {
+  height: 50px;
+}
+
+.password_restriction_box {
+  background-color: #f8fafc;
+  border: solid rgb(211, 221, 249);
+  padding: 10px;
+  border-radius: 15px;
+  font-size: 12px;
+}
+@keyframes WarningShake {
+  0% {
+    transform: translate(2px, 0px);
+  }
+  20% {
+    transform: translate(-2px,0px);
+  }
+  40% {
+    transform: translate(2px, 0px);
+  }
+  60% {
+    transform: translate(-2px, 0px);
+  }
+  80% {
+    transform: translate(2px, 0px);
+  }
+  100% {
+    transform: translate(-2px, 0px);
+  }
+}
+.shake {
+  animation: WarningShake 0.5s;
+}
+.warning_restriction {
+  color: red;
+}
+.success_restriction {
+  color: $success;
+}
+
+// ============================================================
+// NAVBAR
+// ============================================================
+.navbar {
+  height: 65px;
+}
+
+.nav_mon_profile {
+  padding: 0.5rem 1rem;
+}
+
+.nav_link_mon_profile {
+  font-size: 12px;
+  height: auto;
+}
+
+.holder_nav {
+  color: #c8f8ff !important;
+  transition: 500ms;
+  font-size: 14px;
+  margin: 0 10px;
+  border-radius: 10px;
+}
+
+.holder_nav:hover {
+  color: #ffffff !important;
+  background-color: #15716b;
+  transition: 500ms;
+}
+.holder_nav.activated {
+  color: #ffffff !important;
+  background-color: $secondary;
+  border: solid $primary;
+  transition: 500ms;
+}
+
+.holder_nav:active {
+  color: #ffffff !important;
+  background-color: #1e9b93;
+  transition: 500ms;
+}
+
+.holder_profile:hover {
+  color: #c8f8ff !important;
+  transition: 500ms;
+}
+
+.holder_profile, .holder_profile:active {
+  color: white !important;
+  transition: 250ms;
+}
+
+.holder_logout:hover {
+  color: white !important;
+  transition: 500ms;
+}
+
+.holder_logout, .holder_logout:active {
+  color: #00bba7 !important;
+  transition: 250ms;
+}
+
+.img_brand {
+  height: 40px;
+  width: 40px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  border: solid pink;
+  border-width: 2px;
+}
+
+.box_img_profile {
+  height: 50px;
+  width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  transition: 500ms;
+}
+
+.box_img_profile:hover {
+  transition: 500ms;
+  background-color: $success;
+}
+
+.img_profile {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  background-color: #ffffff;
+}
+
+// ============================================================
+// WELCOME PAGE
+// ============================================================
+.img_welcome {
+  height: 100%;
+  width: 100%;
+}
+
+.reserve_welcome_page {
+  position: relative;
+  height: 7rem;
+  background-color: rgb(233, 239, 236);
+  border-radius: 15px;
+  box-shadow: -5px 0px 0px 0px #00bba7;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.box_welcome_img {
+  display: flex;
+  justify-content: end;
+  position: relative;
+  height: 350px;
+  overflow: hidden;
+  margin-left: auto;
+}
+
+.box_welcome_img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, #f8f9fa 5%, transparent 60%);
+}
+
+.btn_reserver_welcome {
+  width: 250px;
+  height: 50px;
+}
+
+.description_annonce_welcome_page {
+  font-weight: 600;
+  color: white;
+}
+
+// ============================================================
+// RESERVATION PAGE
+// ============================================================
+tr:not(.first_line) {
+  height: 100px;
+}
+
+tr:hover:not(.first_line) td {
+  background-color: #f0f0f0;
+}
+
+tr:hover:not(.first_line) td:hover {
+  background-color: #00bba810;
+  color: white;
+  cursor: pointer;
+}
+
+.first_line th {
+  background-color: #f1f1f5;
+  color: rgb(100, 104, 111);
+  vertical-align: middle;
+}
+
+.first_line {
+  height: 50px;
+}
+
+.first_column {
+  width: 300px;
+}
+.profile_name_size {
+  font-size: 8px;
+  cursor: pointer;
+}
+.box_img_profile_reservation {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 500ms;
+}
+.profile_name_size:hover .box_img_profile_reservation {
+  transition: 500ms;
+  background-color: $success;
+}
+
+.img_profile_reservation {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: solid $primary;
+}
+
+
+// ============================================================
+// FORUM PAGE
+// ============================================================
+.nav_forum {
+  gap: 10px;
+  font-size: 17px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.active {
+  color: $primary !important;
+  border-bottom: $primary solid 5px;
+  font-size: 22px;
+}
+
+.box_subject {
+  margin-top: 16px;
+  height: 13rem;
+  width: 100%;
+  background-color: #fdfdfd;
+  box-shadow: 0px 0px 5px 0px #e0e0e0;
+}
+
+.box_form {
+  height: 100%;
+}
+
+.time_message {
+  font-size: 12px;
+  color: rgb(100, 104, 111);
+}
+
+.f_public {
+  color: rgb(17, 0, 255);
+  background-color: rgb(218, 227, 255);
+  border-radius: 7px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.f_reunion {
+  color: rgb(255, 115, 0);
+  background-color: rgb(255, 254, 218);
+  border-radius: 7px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.f_annonce {
+  color: rgb(162, 0, 255);
+  background-color: rgb(251, 218, 255);
+  border-radius: 7px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+// ============================================================
+// VUE
+// ============================================================
+.blurred {
+  filter: blur(3px);
+}
+
+.darkened_blurred {
+  filter: blur(3px) brightness(0.7);
+}
+
+.darkened {
+  filter: brightness(0.7);
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.305);
+  z-index: 99;
+}
+
+.modale {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.modale-content {
+  background: white;
+  border-radius: 15px;
+  width: 60%;
+  min-height: 20rem;
+}
+
+.input_modale {
+  width: 100%;
+  height: 40px;
+  border: solid rgb(211, 221, 249);
+  border-radius: 10px;
+  background-color: #f8fafc;
+  padding: 0 10px;
+}
+
+.box_equipement {
+  height: 50px;
+}
+
+.btn_size_equipment {
+  width: 50px;
+  height: 30px;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  align-content: center;
+  transition: 150ms;
+}
+
+.btn_size_equipment:active {
+  border: solid $success;
+  transform: scale(0.9);
+  transition: 200ms;
+}
+
+.counter_equipment {
+  width: 50px;
+  height: 50px;
+  margin: 0 5px;
+  border-radius: 50%;
+  cursor: default;
+  padding: 0;
+  text-align: center !important;
+}
+// ============================================================
+// ADMIN
+// ============================================================
+  .responsive_admin_nav {
+    position: sticky;
+    top: 65px;
+    height: 100vh;
+  }
+  .box_admin_nav {
+    width: 100%;
+  }
+// ============================================================
+// FOOTER
+// ============================================================
+footer {
+  background-color: rgb(207, 210, 229);
+  min-height: 150px;
+}
+
+.img_footer {
+  height: 35px;
+  width: 35px;
+}
+
+.© {
+  color: #57548e;
+  font-size: 12px;
+}
+
+// ============================================================
+// BOOTSTRAP OVERRIDES
+// ============================================================
+.modal-content {
+  height: 500px;
+  width: 100%;
+}
+
+.stretched-link {
+  height: auto;
+}
+
+// ============================================================
+// RESPONSIVE NAVBAR
+// ============================================================
+@media (max-width: 992px) {
+  .navbar-brand {
+    font-size: 16px;
+  }
+  .burger_menu{
+    height: 50px;
+    width: 60px;
+    border-radius: 15px;
+    color: $primary;
+    border: solid $primary;
+  }
+  .burger_menu.activated{
+    border-color: $success;
+    color: $success;
+  }
+  .navmenu {
+    position: absolute;
+    color: white;
+    background-color: $primary;
+    border-radius: 0 0 10px 10px;
+    display: block;
+    width: 100%;
+    transform: translateY(-400px);
+    transition: 500ms;
+    z-index: -99;
+  }
+  .navmenu.showed {
+    display: block;
+    transform: translateY(0);
+    transition: 500ms;
+  }
+  .navmenu_admin {
+    position: absolute;
+    color: white;
+    background-color: $secondary;
+    border-radius: 0 0 10px 10px;
+    display: block;
+    width: 100%;
+    transform: translateY(-200px);
+    transition: 500ms;
+    z-index: -99;
+  }
+  .navmenu_admin.showed {
+    display: block;
+    transform: translateY(0);
+    transition: 500ms;
+  }
+  
+  .holder_nav{
+    font-size: 16px;
+    margin: 8px;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  .holder_nav.activated {
+  color: #ffffff !important;
+  background-color: $info;
+  border: solid $primary;
+  transition: 500ms;
+  }
+  .responsive_admin_nav {
+    width: 33%;
+    position: fixed;
+  }
+  .admin_side_bar {
+   transform: translateX(-300px);
+   transition: 500ms;
+  }
+  .admin_side_bar.showed {
+   transform: translateX(0); 
+   transition: 500ms;
+  }
+  .box_admin_nav {
+    width: auto;
+  }
+  .side_bar_responsive_admin_nav {
+  width: 300px;
+  }
+  .btn_responsive_admin_nav {
+  background-color: $pikachu;
+  height: 70px;
+  width: 70px;
+  border-radius: 0 15px 15px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border: solid $info;
+  border-width: 5px;
+  }
+  .btn_responsive_admin_nav.showed{
+    border-color: $success;
+  }
+  .sombrer{
+    background-color: rgba(0, 0, 0, 0.305);  
+  }
+  .log_out{
+    color: rgb(224, 119, 119) !important;
+  }
+  .log_out:hover{
+    background-color: rgb(250, 127, 127);
+  }
+}
