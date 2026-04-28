@@ -333,6 +333,14 @@ hr {
 // ============================================================
 // RESERVATION PAGE
 // ============================================================
+table {
+    table-layout: fixed;
+}
+td p{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
 tr:not(.first_line) {
   height: 100px;
 }
@@ -340,6 +348,7 @@ tr:not(.first_line) {
 tr:hover:not(.first_line) td {
   background-color: #f0f0f0;
 }
+
 
 tr:hover:not(.first_line) td:hover {
   background-color: #00bba810;
@@ -451,6 +460,27 @@ tr:hover:not(.first_line) td:hover {
 // ============================================================
 // VUE
 // ============================================================
+
+.reserved-meeting 
+{ 
+  background-color: #ffb3c1 !important; 
+}
+.reserved-after_work { 
+  background-color: #b3d9ff !important; 
+  }
+
+.reserved-atelier { 
+  background-color: #ffffb3 !important; 
+  }
+
+.reserved-meetingGlobal { 
+  background-color: #b3ffb3 !important; 
+ }
+
+.reserved-externe { 
+  background-color: #e8b3ff !important; 
+ }
+  
 .blurred {
   filter: blur(3px);
 }
