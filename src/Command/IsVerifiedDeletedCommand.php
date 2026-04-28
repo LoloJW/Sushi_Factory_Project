@@ -29,9 +29,9 @@ class IsVerifiedDeletedCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $users = $this->EM
         ->getRepository(User::class)
-        ->createQueryBuilder('u')
-        ->where('u.isVerified = false')
-        ->andWhere('u.joinedAt < :expiration')
+        ->createQueryBuilder('utilisateur')
+        ->where('utilisateur.isVerified = false')
+        ->andWhere('utilisateur.joinedAt < :expiration')
         ->setParameter('expiration', new \DateTimeImmutable('-1 hour'))
         ->getQuery()
         ->getResult();

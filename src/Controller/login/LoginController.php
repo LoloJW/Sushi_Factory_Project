@@ -71,7 +71,6 @@ final class LoginController extends AbstractController
             $em->persist($user);
             $em->flush();
 
-            try{
             $emailVerifier->sendEmailConfirmation('app_verify_email', $user,
                 (new TemplatedEmail())
                     ->from(new Address('SushiFactory@SF.com', 'MrSakana'))
@@ -80,9 +79,7 @@ final class LoginController extends AbstractController
                     ->htmlTemplate('login/confirmation_email.html.twig')
             );
             $this->addFlash("info","Un lien vous a été envoyé sur votre email.");
-            } catch (\Exception $e) {
-                    dd('Exception: ' . $e->getMessage() . ' dans ' . $e->getFile() . ' ligne ' . $e->getLine());
-            }
+            
             return $this->redirectToRoute('app_login');
         }
         
@@ -96,13 +93,13 @@ final class LoginController extends AbstractController
     {
 
         $id = $request->query->get('id');
-        // if (!$id) {
-        //     return $this->redirectToRoute('app_login');
-        // }
+        if (!$id) {
+            return $this->redirectToRoute('app_login');// Ce sont des if de protection, ils sont là pour vérifier que l'id et le user existent.
+        }
         $user = $UR->find($id);
-        // if (!$user) {
-        //     return $this->redirectToRoute('app_login');
-        // }
+        if (!$user) {
+            return $this->redirectToRoute('app_login');// Si quelqu'un essaye d'y accéder sans ID ou avec un ID qui n'est lié à aucun user ça renvoit sur la login page sans erreur
+        }
 
         try {
             $emailVerifier->handleEmailConfirmation($request, $user); //en temps normal $this->getUser() suffit mais comme l'utilisateur n'est pas connecté on cherche le user par son ID

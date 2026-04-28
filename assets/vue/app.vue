@@ -12,9 +12,9 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="salle in salles" :key="salle">
-                    <th class="first_column">{{ salle }}</th>
-                    <td v-for="heure in heures" :key="heure" @click="ouvrirModale(salle, heure)" class="text-center"></td>
+                <tr v-for="salle in salles" :key="salle.id">
+                    <th class="first_column">{{ salle.roomNumber }}</th>
+                    <td v-for="heure in heures" :key="heure" @click="ouvrirModale(salle.roomNumber, heure)" class="text-center"></td>
                 </tr>
             </tbody>
         </table>
@@ -96,10 +96,17 @@
 <script setup>
 import { ref } from 'vue';
 const container = document.querySelector('#vue-app');
+
 const avatars = container.dataset.avatars;
+
 const users = JSON.parse(container.dataset.users);
 const collègues = ref(users);
-const salles = ref(['Salle 1', 'Salle 2', 'Salle 3', 'Salle 4', 'Salle 5']);
+
+const reservations = JSON.parse(container.dataset.reservations);
+
+const rooms = JSON.parse(container.dataset.rooms);
+const salles = ref(rooms);
+
 const heures = ref([8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]);
 
 const modalVisible = ref(false);
