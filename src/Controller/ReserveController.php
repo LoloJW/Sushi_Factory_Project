@@ -56,9 +56,8 @@ final class ReserveController extends AbstractController
         return $this->render('reserve/index.html.twig', [
             "users" => $usersData,
             "rooms" => $roomsData,
-            "reservations" => $reservationRoomsData,
-            "reservationsType" => $reservationsType,
-            'controller_name' => 'ReserveController',
+            "reservationsRooms" => $reservationRoomsData,
+            "reservationsTypes" => $reservationsType
         ]);
     }
 }

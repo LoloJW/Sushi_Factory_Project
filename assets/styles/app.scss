@@ -470,7 +470,7 @@ tr:hover:not(.first_line) td:hover {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.305);
-  z-index: 99;
+  z-index: 1040;
 }
 
 .modale {
@@ -482,7 +482,7 @@ tr:hover:not(.first_line) td:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 100;
+  z-index: 1050;
 }
 
 .modale-content {

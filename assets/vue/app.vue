@@ -45,16 +45,24 @@
                             </div>
                             <div class="col-6">
                                 <label for="fin">Fin</label>
-                                <input type="text" id="fin" class="input_modale">
+                                <select class="input_modale" v-model="SelectedEndHour">
+                                    <option v-for="heure in heuresFin" :key="heure" :value="heure">
+                                        {{ heure }}:00
+                                    </option>
+                                </select>
                             </div>
                         </div>
                         <div class="mb-2">
                             <label for="titre">Titre de la réunion</label>
-                            <input type="text" id="titre" class="input_modale">
+                            <input type="text" id="titre" class="input_modale" v-model="titre">
                         </div>
                         <div class="mb-2">
                             <label for="titre">Catégorie</label>
-                            <input type="text" id="titre" class="input_modale">
+                            <select class="input_modale" v-model="SelectedType">
+                                <option v-for="type in types" :key="type.value" :value="type.value">
+                                    {{ type.label }}
+                                </option>
+                            </select>
                         </div>
                         <!-- Si le counter est à 3 je voudrais que ça disparaisse -->
                         <div class="mt-3 d-flex justify-content-center align-items-center" @click="ajouter_un_equipement()" v-if="counter_equipment.length < 3">
@@ -94,7 +102,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 const container = document.querySelector('#vue-app');
 
 const avatars = container.dataset.avatars;
@@ -102,16 +110,23 @@ const avatars = container.dataset.avatars;
 const users = JSON.parse(container.dataset.users);
 const collègues = ref(users);
 
-const reservations = JSON.parse(container.dataset.reservations);
+const reservations = JSON.parse(container.dataset.reservationsrooms);
 
 const rooms = JSON.parse(container.dataset.rooms);
 const salles = ref(rooms);
 
 const heures = ref([8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]);
+const SelectedHour = ref(null);
+const SelectedEndHour = ref(null);
+
+
+const types = JSON.parse(container.dataset.reservationtypes);
+
 
 const modalVisible = ref(false);
 const SelectedRoom = ref(null);
-const SelectedHour = ref(null);
+const SelectedType = ref(null);
+const titre = ref('');
 
 // Ouvrir la modale et assombrir le reste de la page
 function ouvrirModale(salle, heure) {
