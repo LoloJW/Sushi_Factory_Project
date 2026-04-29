@@ -22,7 +22,7 @@ class SecretIdGeneratorCommand extends Command
         if (file_exists('.env.dev.local')) {
             $io->error("Le fichier {$envFile} existe déjà.");
 
-            return Command::SUCCESS;
+            return Command::FAILURE;
         }
 
         $Secret_key = bin2hex(random_bytes(16));
@@ -30,6 +30,6 @@ class SecretIdGeneratorCommand extends Command
 
         $io->success('Le fichier a été généré avec succès');
 
-        return Command::FAILURE;
+        return Command::SUCCESS;
     }
 }
