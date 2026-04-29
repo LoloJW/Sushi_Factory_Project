@@ -1,0 +1,29 @@
+{% extends 'base/website.html.twig' %}
+
+{% block title %}Changement de mot de passe{% endblock %}
+
+{% block main %}
+
+<!-- Changement d'email -->
+<div class="card border-0 rounded-4 shadow-sm p-4 mb-4">
+    <h5 class="fw-bold mb-4" style="color: #1a2e44;">
+        <i class="fa-regular fa-envelope me-2" style="color: #00897b;"></i>Changer l'email
+    </h5>
+
+    {% for message in app.flashes('error_email') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('success_email') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
+    <form action="{{ path('app_change_email') }}" method="POST">
+        <input type="hidden" name="_token" value="{{ csrf_token('change_email') }}">
+        <div class="mb-3">
+            <label class="fw-semibold mb-1">Nouvel email</label>
+            <input type="email" name="email" class="form-control" value="{{ app.user.email }}">
+        </div>
+        <button type="submit" class="btn btn-success">Modifier l'email</button>
+    </form>
+</div>
+{% endblock %}

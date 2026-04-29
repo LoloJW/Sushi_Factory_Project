@@ -1,7 +1,5 @@
 {% extends 'base/website.html.twig' %}
 
-{% block title %}Hello MyProfileController!{% endblock %}
-
 {% block main %}
 <div class="container-fluid px-4 py-4">
     
@@ -16,12 +14,17 @@
                     </div>
                 </div>
                 <div>
-                    <h2 class="fw-bold mb-0" style="color: #1a2e44;">Sophie Martin</h2>
-                    <p style="color: #00897b;" class="fw-semibold mb-3">Chef de Projet Senior</p>
+                    <h2 class="fw-bold mb-0" style="color: #1a2e44;">{{app.user.firstName}} {{app.user.lastName}}</h2>
+                    <p style="color: #00897b;" class="fw-semibold mb-3">Employé</p>
                     <div class="d-flex gap-4 flex-wrap">
-                        <span class="text-muted"><i class="fa-solid fa-briefcase me-2"></i>Département Marketing</span>
-                        <span class="text-muted"><i class="fa-regular fa-envelope me-2"></i>sophie.martin@greenspace.com</span>
-                        <span class="text-muted"><i class="fa-solid fa-location-dot me-2"></i>Bureau 304, 3ème étage</span>
+                     {% for message in app.flashes('success_password') %}
+                        <div class="alert alert-success">{{ message }}</div>
+                    {% endfor %}
+                        <span class="text-muted"><i class="fa-solid fa-briefcase me-2"></i>{% if is_granted('ROLE_ADMIN') %}Admin{% else %}Employé{% endif %}</span>
+
+                        <span class="text-muted"><i class="fa-regular fa-envelope me-2"></i>{{app.user.email}}</span>
+                        <a href="{{ path('app_change_email') }}" class="btn btn-outline-secondary">Changer l'email</a>
+                        <a href="{{ path('app_change_password') }}" class="btn btn-outline-secondary">Changer le mot de passe</a>
                     </div>
                 </div>
             </div>
