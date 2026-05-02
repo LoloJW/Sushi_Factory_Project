@@ -21,6 +21,7 @@ security:
             provider: app_user_provider
             user_checker: App\Security\UserChecker
             form_login:
+                failure_path: app_login
                 login_path: app_login
                 check_path: app_login
                 default_target_path: app_welcome
