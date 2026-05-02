@@ -1,0 +1,6 @@
+The key "password" must be a non-empty string.: "Veuillez remplir tout les champs."
+The key "email" must be a non-empty string.: "Veuillez remplir tout les champs."
+Bad credentials.: "Email ou mot de passe incorrect."
+The presented password is invalid.: "Email ou mot de passe incorrect."
+Too many failed login attempts, please try again in %minutes% minute.: "Trop de tentatives, réessayez dans %minutes% minute."
+Too many failed login attempts, please try again in %minutes% minutes.: "Trop de tentatives, réessayez dans %minutes% minutes."

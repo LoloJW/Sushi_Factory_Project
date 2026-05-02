@@ -4,7 +4,11 @@
     <div class="form_center shadow px-2">
         <div class="d-flex justify-content-start"><h2 class="fw-bold">Connexion</h2></div>
                 {% if error %}
-                    <span class="text-danger fw-bold">{{error.message}}</span>
+                    {% if error.message %}
+                        <span class="text-danger fw-bold">{{error.message | trans(error.messageData, 'security')}}</span>
+                    {% else %}
+                        <span class="text-danger fw-bold">{{error.messageKey | trans(error.messageData, 'security')}}</span>
+                    {% endif %}
                 {% endif %}
                 {% for message in app.flashes('success') %}
                     <span class="text-success fw-bold">{{message}}</span>
@@ -24,13 +28,17 @@
                 </div>
                 <input type="hidden" name="_csrf_token" value="{{csrf_token('authenticate')}}">
                 <div class="w-100"><button type="submit" class="btn btn-success text-white w-100 text-center align-content-center fw-bold enter-login mt-4">Se Connecter</button></div>
+                <div class="ms-2 mt-2">
+                    <input type="checkbox" class="form-check-input p-0" name="_remember_me" id="remember_me">
+                    <label class="form-check-label" for="remember_me">Se souvenir de moi ?</label>
+                </div>
             </form>
         </div>
         <div>
-            <div class="text-center mt-4">
+            <div class="text-center mt-2">
                 <a href="{{path('app_forgot_password')}}">Mot de passe oublié ?</a>
             </div>
-            <hr class="my-4">
+            <hr class="my-3">
             <div class="">
                 <span>Pas encore inscript ?</span><a href="{{path('app_register')}}"> Veuillez vous inscrire</a>
             </div>

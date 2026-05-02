@@ -7,6 +7,7 @@
  */
 import './styles/app.scss';
 import 'bootstrap';
+import DataTable from 'datatables.net-bs5';
 //___________
 import { createApp } from 'vue';
 import App from './vue/app.vue';
