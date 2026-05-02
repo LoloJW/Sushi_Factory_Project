@@ -5,30 +5,29 @@
     
     <!-- Carte profil -->
     <div class="card border-0 rounded-4 shadow-sm p-4 mb-4">
-        <div class="d-flex justify-content-between align-items-start">
-            <div class="d-flex align-items-center gap-4">
+        <div class="d-flex justify-content-start gap-4">
                 <div class="position-relative">
-                    <img src="" alt="Photo de profil" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
+                    <img src="{{asset("images/Logo.png")}}" alt="Photo de profil" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
                     <div class="position-absolute bottom-0 end-0 bg-success rounded-circle d-flex justify-content-center align-items-center" style="width: 30px; height: 30px;">
                         <i class="fa-solid fa-pen text-white" style="font-size: 12px;"></i>
                     </div>
                 </div>
-                <div>
+                <div class="w-100 d-flex flex-column justify-content-between">
                     <h2 class="fw-bold mb-0" style="color: #1a2e44;">{{app.user.firstName}} {{app.user.lastName}}</h2>
-                    <p style="color: #00897b;" class="fw-semibold mb-3">Employé</p>
-                    <div class="d-flex gap-4 flex-wrap">
-                     {% for message in app.flashes('success_password') %}
-                        <div class="alert alert-success">{{ message }}</div>
-                    {% endfor %}
-                        <span class="text-muted"><i class="fa-solid fa-briefcase me-2"></i>{% if is_granted('ROLE_ADMIN') %}Admin{% else %}Employé{% endif %}</span>
-
-                        <span class="text-muted"><i class="fa-regular fa-envelope me-2"></i>{{app.user.email}}</span>
-                        <a href="{{ path('app_change_email') }}" class="btn btn-outline-secondary">Changer l'email</a>
-                        <a href="{{ path('app_change_password') }}" class="btn btn-outline-secondary">Changer le mot de passe</a>
+                    <div class="">
+                        <div class="d-flex w-100 justify-content-between">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <span class="text-muted mx-2"><i class="fa-solid fa-briefcase me-2 "></i>{% if is_granted('ROLE_ADMIN') %}Admin{% else %}Employé{% endif %}</span>
+                                <span class="text-muted mx-2"><i class="fa-regular fa-envelope me-2"></i>{{app.user.email}}</span>
+                            </div>
+                            <div class="d-flex">
+                                <a href="{{ path('app_change_email') }}"  class="mx-2 btn btn-primary btn-sm">Changer l'email</a>
+                                <a href="{{ path('app_change_password') }}" class=" mx-2 btn btn-primary btn-sm">Changer le mot de passe</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <button class="btn btn-outline-secondary rounded-3">Modifier les infos</button>
+            
         </div>
     </div>
 
