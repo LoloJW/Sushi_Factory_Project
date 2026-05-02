@@ -34,3 +34,5 @@ C'est un package qui gère toute la logique derrière un changement de mot de pa
 D'ailleurs j'ai beaucoup galérer pour un problème d'envoie d'email asynchrone via le formulaire et le bundle.
 Le fichier ```messenger.yaml``` une ligne du routing envoyait des emails de manière asynchrone (Apparemment ajouté à une liste qui peut être rendu par la suite).
 J'ai commenté la ligne pour que les envois soient automatique.
+
+```composer require symfony/rate-limiter```

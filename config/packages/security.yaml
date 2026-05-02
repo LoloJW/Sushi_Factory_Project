@@ -18,15 +18,22 @@ security:
             security: false
         main:
             lazy: true
-            provider: app_user_provider
+            login_throttling:
+                max_attempts: 3
+                interval: '5 minutes'
+            provider: app_user_provider # Référence à la table user et au provider plus haut
             user_checker: App\Security\UserChecker
             form_login:
                 failure_path: app_login
+                default_target_path: app_welcome
+                remember_me: true
                 login_path: app_login
                 check_path: app_login
-                default_target_path: app_welcome
                 username_parameter: email
                 password_parameter: password
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800    
             logout:
                 path: app_logout
                 target: app_login
