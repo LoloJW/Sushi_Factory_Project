@@ -28,6 +28,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     #[ORM\Column]
+    #[Assert\NotBlank (message: "Le mot de passe est obligatoire")]
+    #[Assert\Length(min: 12, minMessage: "Le mot de passe doit avoir au moins 12 caractères")]
+    #[Assert\Regex(pattern: '/[A-Z]/', message: "Le mot de passe doit contenir au moins une majuscule")]
+    #[Assert\Regex(pattern: '/[a-z]/', message: "Le mot de passe doit contenir au moins une minuscule")]
+    #[Assert\Regex(pattern: '/[0-9]/', message: "Le mot de passe doit contenir au moins un chiffre")]
+    #[Assert\Regex(pattern: '/[!@#$%&*]/', message: "Le mot de passe doit contenir au moins un caractère special")]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
@@ -67,11 +73,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imgProfile = null;
 
+    /**
+     * @var Collection<int, ReservationRoom>
+     */
+    #[ORM\ManyToMany(targetEntity: ReservationRoom::class, mappedBy: 'userInvites')]
+    private Collection $reservationRoomsInvites;
+
     public function __construct()
     {
         $this->reservationRooms = new ArrayCollection();
         $this->subjects = new ArrayCollection();
         $this->posts = new ArrayCollection();
+        $this->reservationRoomsInvites = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -301,6 +314,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setImgProfile(?string $imgProfile): static
     {
         $this->imgProfile = $imgProfile;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ReservationRoom>
+     */
+    public function getReservationRoomsInvites(): Collection
+    {
+        return $this->reservationRoomsInvites;
+    }
+
+    public function addReservationRoomsInvite(ReservationRoom $reservationRoomsInvite): static
+    {
+        if (!$this->reservationRoomsInvites->contains($reservationRoomsInvite)) {
+            $this->reservationRoomsInvites->add($reservationRoomsInvite);
+            $reservationRoomsInvite->addUserInvite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReservationRoomsInvite(ReservationRoom $reservationRoomsInvite): static
+    {
+        if ($this->reservationRoomsInvites->removeElement($reservationRoomsInvite)) {
+            $reservationRoomsInvite->removeUserInvite($this);
+        }
 
         return $this;
     }

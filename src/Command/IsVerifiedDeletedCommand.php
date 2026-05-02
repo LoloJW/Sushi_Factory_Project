@@ -23,7 +23,7 @@ class IsVerifiedDeletedCommand extends Command
     {
         parent::__construct();
     }
-
+    //tâche Cron
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

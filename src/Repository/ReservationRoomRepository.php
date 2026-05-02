@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\ReservationRoom;
+use App\Entity\Rooms;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,20 +17,20 @@ class ReservationRoomRepository extends ServiceEntityRepository
         parent::__construct($registry, ReservationRoom::class);
     }
 
-//    /**
-//     * @return ReservationRoom[] Returns an array of ReservationRoom objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('r.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+        public function findConflict(Rooms $room, \DateTime $timeStart, \DateTime $timeEnd, \DateTime $date): ?ReservationRoom
+        {
+            return $this->createQueryBuilder('reserve')
+                ->where('reserve.room = :room')
+                ->andWhere('reserve.reservedFor = :date')
+                ->andWhere('reserve.timeStart < :timeEnd')
+                ->andWhere('reserve.timeEnd > :timeStart')
+                ->setParameter('room', $room)
+                ->setParameter('date', $date)
+                ->setParameter('timeStart', $timeStart)
+                ->setParameter('timeEnd', $timeEnd)
+                ->getQuery()
+                ->getOneOrNullResult();
+        }
 
 //    public function findOneBySomeField($value): ?ReservationRoom
 //    {

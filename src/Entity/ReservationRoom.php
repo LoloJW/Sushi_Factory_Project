@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Enum\ReservationType;
 use App\Repository\ReservationRoomRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -40,6 +42,20 @@ class ReservationRoom
 
     #[ORM\OneToOne(mappedBy: 'reservation', cascade: ['persist', 'remove'])]
     private ?Subject $subject = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $name = null;
+
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'reservationRoomsInvites')]
+    private Collection $userInvites;
+
+    public function __construct()
+    {
+        $this->userInvites = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -147,6 +163,42 @@ class ReservationRoom
         }
 
         $this->subject = $subject;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUserInvites(): Collection
+    {
+        return $this->userInvites;
+    }
+
+    public function addUserInvite(User $userInvite): static
+    {
+        if (!$this->userInvites->contains($userInvite)) {
+            $this->userInvites->add($userInvite);
+        }
+
+        return $this;
+    }
+
+    public function removeUserInvite(User $userInvite): static
+    {
+        $this->userInvites->removeElement($userInvite);
 
         return $this;
     }

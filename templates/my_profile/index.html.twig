@@ -1,20 +1,114 @@
 {% extends 'base/website.html.twig' %}
 
-{% block title %}Hello MyProfileController!{% endblock %}
+{% block main %}
+<div class="container-fluid px-4 py-4">
+    
+    <!-- Carte profil -->
+    <div class="card border-0 rounded-4 shadow-sm p-4 mb-4">
+        <div class="d-flex justify-content-start gap-4">
+                <div class="position-relative">
+                    <img src="{{asset("images/Logo.png")}}" alt="Photo de profil" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
+                    <div class="position-absolute bottom-0 end-0 bg-success rounded-circle d-flex justify-content-center align-items-center" style="width: 30px; height: 30px;">
+                        <i class="fa-solid fa-pen text-white" style="font-size: 12px;"></i>
+                    </div>
+                </div>
+                <div class="w-100 d-flex flex-column justify-content-between">
+                    <h2 class="fw-bold mb-0" style="color: #1a2e44;">{{app.user.firstName}} {{app.user.lastName}}</h2>
+                    <div class="">
+                        <div class="d-flex w-100 justify-content-between">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <span class="text-muted mx-2"><i class="fa-solid fa-briefcase me-2 "></i>{% if is_granted('ROLE_ADMIN') %}Admin{% else %}Employé{% endif %}</span>
+                                <span class="text-muted mx-2"><i class="fa-regular fa-envelope me-2"></i>{{app.user.email}}</span>
+                            </div>
+                            <div class="d-flex">
+                                <a href="{{ path('app_change_email') }}"  class="mx-2 btn btn-primary btn-sm">Changer l'email</a>
+                                <a href="{{ path('app_change_password') }}" class=" mx-2 btn btn-primary btn-sm">Changer le mot de passe</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+        </div>
+    </div>
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <div class="row g-4">
+        <!-- Réunions à venir -->
+        <div class="col-lg-7">
+            <div class="card border-0 rounded-4 shadow-sm p-4">
+                <h5 class="fw-bold mb-4" style="color: #1a2e44;">
+                    <i class="fa-regular fa-calendar me-2" style="color: #00897b;"></i>Réunions à venir
+                </h5>
+                <div class="d-flex flex-column gap-3">
+                    <div class="card border-0 rounded-3 shadow-sm p-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="text-center px-3 border-end">
+                                <p class="text-muted mb-0" style="font-size: 12px;">FÉV</p>
+                                <p class="fw-bold fs-4 mb-0" style="color: #1a2e44;">11</p>
+                            </div>
+                            <div>
+                                <p class="fw-bold mb-0">Point Hebdomadaire</p>
+                                <p class="text-muted mb-0" style="font-size: 13px;">10:00 - 11:30 • Salle Océan</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card border-0 rounded-3 shadow-sm p-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="text-center px-3 border-end">
+                                <p class="text-muted mb-0" style="font-size: 12px;">FÉV</p>
+                                <p class="fw-bold fs-4 mb-0" style="color: #1a2e44;">12</p>
+                            </div>
+                            <div>
+                                <p class="fw-bold mb-0">Point Hebdomadaire</p>
+                                <p class="text-muted mb-0" style="font-size: 13px;">10:00 - 11:30 • Salle Océan</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/xampp/htdocs/Reservation_Project/src/Controller/MyProfileController.php</code></li>
-        <li>Your template at <code>C:/xampp/htdocs/Reservation_Project/templates/my_profile/index.html.twig</code></li>
-    </ul>
+        <!-- Historique récent -->
+        <div class="col-lg-5">
+            <div class="card border-0 rounded-4 shadow-sm p-4">
+                <h5 class="fw-bold mb-4" style="color: #1a2e44;">
+                    <i class="fa-regular fa-clock me-2 text-muted"></i>Historique récent
+                </h5>
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex gap-3 align-items-start">
+                        <div class="d-flex flex-column align-items-center">
+                            <div class="rounded-circle bg-secondary" style="width: 10px; height: 10px; margin-top: 5px;"></div>
+                            <div class="bg-secondary" style="width: 2px; height: 50px;"></div>
+                        </div>
+                        <div>
+                            <p class="text-muted mb-0" style="font-size: 12px;">Il y a 2 jours</p>
+                            <p class="fw-bold mb-0">Workshop Design</p>
+                            <p class="text-muted mb-0" style="font-size: 13px;">2h • Salle Forêt</p>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-3 align-items-start">
+                        <div class="d-flex flex-column align-items-center">
+                            <div class="rounded-circle bg-secondary" style="width: 10px; height: 10px; margin-top: 5px;"></div>
+                            <div class="bg-secondary" style="width: 2px; height: 50px;"></div>
+                        </div>
+                        <div>
+                            <p class="text-muted mb-0" style="font-size: 12px;">Il y a 4 jours</p>
+                            <p class="fw-bold mb-0">Workshop Design</p>
+                            <p class="text-muted mb-0" style="font-size: 13px;">2h • Salle Forêt</p>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-3 align-items-start">
+                        <div class="d-flex flex-column align-items-center">
+                            <div class="rounded-circle bg-secondary" style="width: 10px; height: 10px; margin-top: 5px;"></div>
+                        </div>
+                        <div>
+                            <p class="text-muted mb-0" style="font-size: 12px;">Il y a 6 jours</p>
+                            <p class="fw-bold mb-0">Workshop Design</p>
+                            <p class="text-muted mb-0" style="font-size: 13px;">2h • Salle Forêt</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
