@@ -76,6 +76,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imgProfile = null;
 
+    #[Assert\File(
+    maxSize: '2M',
+    extensions: ['png', 'jpg', 'jpeg', 'webp'],
+    maxSizeMessage: 'Votre avatar ne doit pas dépasser {{ limit }} {{ suffix }}.',
+    extensionsMessage: 'Format invalide, uniquement png, jpg, jpeg et webp acceptés.',
+    )]
     #[Vich\UploadableField(mapping: 'avatars', fileNameProperty: 'imgProfile' )]
     private ?File $imgFile = null;
 
