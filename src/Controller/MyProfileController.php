@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\ChangePasswordFormType;
+use App\Form\AvatarFormType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,15 +15,34 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class MyProfileController extends AbstractController
 {
+
+        public function __construct(
+            private EntityManagerInterface $em)
+        {
+        }
     #[Route('/profile', name: 'app_my_profile')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
+        $avatarForm = $this->createForm(AvatarFormType::class, $user);
+        $avatarForm->handleRequest($request);
+
+        if ($avatarForm->isSubmitted() && $avatarForm->isValid()) {
+            $this->em->flush();
+            $user->setImgFile(null);
+            $this->addFlash('success', 'Avatar modifié avec succès.');
+            return $this->redirectToRoute('app_my_profile');
+        }
         
-        return $this->render('my_profile/index.html.twig');
+        return $this->render('my_profile/index.html.twig',
+        ["avatarForm" => $avatarForm->createView()]);
     }
 
     #[Route('/profile/change-password', name: 'app_change_password', methods: ['GET', 'POST'])]
-    public function changePasswordForm( Request $request, UserPasswordHasherInterface $hasher, EntityManagerInterface $em): Response
+    public function changePasswordForm(Request $request, UserPasswordHasherInterface $hasher): Response
     {
         $user = $this->getUser();
         if (!$user instanceof User) {
@@ -38,7 +58,7 @@ final class MyProfileController extends AbstractController
                 return $this->redirectToRoute('app_change_password');
             }
             $user->setPassword($hasher->hashPassword($user, $form->get('password')->getData()));
-            $em->flush();
+            $this->em->flush();
             $this->addflash('success_password', 'Mot de passe modifié avec succès.');
             return $this->redirectToRoute('app_my_profile');
         }

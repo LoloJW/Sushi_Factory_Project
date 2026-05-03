@@ -7,30 +7,52 @@
     <div class="card border-0 rounded-4 shadow-sm p-4 mb-4">
         <div class="d-flex justify-content-start gap-4">
                 <div class="position-relative">
-                    <img src="{{asset("images/Logo.png")}}" alt="Photo de profil" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
-                    <div class="position-absolute bottom-0 end-0 bg-success rounded-circle d-flex justify-content-center align-items-center" style="width: 30px; height: 30px;">
-                        <i class="fa-solid fa-pen text-white" style="font-size: 12px;"></i>
-                    </div>
+                    {% if app.user.imgProfile %}
+                        <div class="avatar_box" >
+                            <label for="avatar_form_imgFile_delete"><i class="fa-solid fa-x text-danger top-0 start-0 position-absolute cursor_pointer"></i></label>
+                            <img src="{{asset('images/avatars/'~app.user.imgProfile)}}" alt="Photo de profil" class="avatar">
+                            <label for="avatar_form_imgFile_file">
+                                <div class="edit_btn_profile rounded-circle position-absolute cursor_pointer bg-success d-flex justify-content-center align-items-center">
+                                    <i class="fa-solid fa-pencil text-white"></i>
+                                </div>
+                            </label>
+                        </div>
+                        {% else %}
+                        <div class="avatar_box" >
+                            <img src="{{asset('images/avatar.png')}}" alt="Photo de profil" class="avatar">
+                            <label for="avatar_form_imgFile_file">
+                                <div class="edit_btn_profile rounded-circle position-absolute cursor_pointer bg-success d-flex justify-content-center align-items-center">
+                                    <i class="fa-solid fa-plus text-white"></i>
+                                </div>
+                            </label>
+                        </div>
+                    {% endif %}
+                    
+                    {{form_start(avatarForm, {"attr":{"enctype":"multipart/form-data","id":"avatar_form"}})}}
+                        {{form_widget(avatarForm.imgFile, {'attr': {'class': 'd-none'}})}}
+                    {{form_end(avatarForm)}}
                 </div>
-                <div class="w-100 d-flex flex-column justify-content-between">
+                <div class="w-100 d-flex flex-column justify-content-between character_size">
                     <h2 class="fw-bold mb-0" style="color: #1a2e44;">{{app.user.firstName}} {{app.user.lastName}}</h2>
                     <div class="">
-                        <div class="d-flex w-100 justify-content-between">
-                            <div class="d-flex justify-content-center align-items-center">
-                                <span class="text-muted mx-2"><i class="fa-solid fa-briefcase me-2 "></i>{% if is_granted('ROLE_ADMIN') %}Admin{% else %}Employé{% endif %}</span>
-                                <span class="text-muted mx-2"><i class="fa-regular fa-envelope me-2"></i>{{app.user.email}}</span>
+                        <div class="d-flex w-100 justify-content-between align-items-center">
+                            <div class="d-flex flex-column flex-lg-row justify-content-center align-items-start">
+                                <span class="mx-2"><i class="fa-solid fa-briefcase me-1 "></i>{% if is_granted('ROLE_ADMIN') %}Admin{% else %}Employé{% endif %}</span>
+                                <span class="mx-2"><i class="fa-regular fa-envelope me-1"></i>{{app.user.email}}</span>
                             </div>
-                            <div class="d-flex">
-                                <a href="{{ path('app_change_email') }}"  class="mx-2 btn btn-primary btn-sm">Changer l'email</a>
-                                <a href="{{ path('app_change_password') }}" class=" mx-2 btn btn-primary btn-sm">Changer le mot de passe</a>
+                            <div class="d-flex flex-column flex-lg-row justify-content-center align-items-start">
+                                <a href="{{ path('app_change_email') }}"  class="character_size my-1 mx-2 btn btn-primary btn-sm">Changer l'email</a>
+                                <a href="{{ path('app_change_password') }}" class="character_size my-1 mx-2 btn btn-primary btn-sm">Changer le mot de passe</a>
                             </div>
                         </div>
                     </div>
                 </div>
             
         </div>
+    {% for message in app.flashes('success') %}
+        <span class="text-success fw-semibold">{{message}}</span>
+    {% endfor %}
     </div>
-
     <div class="row g-4">
         <!-- Réunions à venir -->
         <div class="col-lg-7">
