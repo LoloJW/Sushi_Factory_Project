@@ -162,3 +162,19 @@ if(verification_event){
         }
     })
 }
+
+const btn_edit_avatar = document.getElementById('avatar_form_imgFile_file');
+const btn_delete_avatar = document.getElementById('avatar_form_imgFile_delete');
+const avatarForm = document.getElementById('avatar_form');
+
+if(btn_edit_avatar && avatarForm){
+    btn_edit_avatar.addEventListener("change", () =>
+        avatarForm.submit()
+    )
+}
+if (btn_delete_avatar && avatarForm) {
+    btn_delete_avatar.addEventListener("change", () => {
+        avatarForm.submit();
+    })
+    
+}
