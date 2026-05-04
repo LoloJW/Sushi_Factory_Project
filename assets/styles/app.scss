@@ -99,6 +99,17 @@ hr {
   background-color: $pikachu;
 }
 
+.cursor_pointer {
+  cursor: pointer;
+}
+
+.vich-file > div {
+    display: none;
+}
+
+.character_size {
+  font-size: 18px;
+}
 // ============================================================
 // LOGIN PAGE
 // ============================================================
@@ -458,8 +469,32 @@ tr:hover:not(.first_line) td:hover {
 }
 
 // ============================================================
-// PROFILE
+// PROFILE PAGE
 // ============================================================
+
+.avatar_box {
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: solid $primary;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.avatar {
+  height: 90px;
+  width: 90px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  object-fit: cover;
+}
+.edit_btn_profile {
+  height: 28px;
+  width: 28px;
+  transform: translate(-10px,20px)
+}
 
 // ============================================================
 // VUE
@@ -617,6 +652,9 @@ footer {
 // RESPONSIVE NAVBAR
 // ============================================================
 @media (max-width: 992px) {
+  .character_size {
+    font-size: 12px;
+  }
   .navbar-brand {
     font-size: 16px;
   }

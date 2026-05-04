@@ -9,9 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[Vich\Uploadable]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -29,12 +32,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     #[ORM\Column]
-    #[Assert\NotBlank(message: 'Le mot de passe est obligatoire')]
-    #[Assert\Length(min: 12, minMessage: 'Le mot de passe doit avoir au moins 12 caractères')]
-    #[Assert\Regex(pattern: '/[A-Z]/', message: 'Le mot de passe doit contenir au moins une majuscule')]
-    #[Assert\Regex(pattern: '/[a-z]/', message: 'Le mot de passe doit contenir au moins une minuscule')]
-    #[Assert\Regex(pattern: '/[0-9]/', message: 'Le mot de passe doit contenir au moins un chiffre')]
-    #[Assert\Regex(pattern: '/[!@#$%&*]/', message: 'Le mot de passe doit contenir au moins un caractère special')]
+    #[Assert\NotBlank (message: "Le mot de passe est obligatoire")]
+    #[Assert\Length(min: 12, minMessage: "Le mot de passe doit avoir au moins 12 caractères")]
+    #[Assert\Regex(pattern: '/[A-Z]/', message: "Le mot de passe doit contenir au moins une majuscule")]
+    #[Assert\Regex(pattern: '/[a-z]/', message: "Le mot de passe doit contenir au moins une minuscule")]
+    #[Assert\Regex(pattern: '/[0-9]/', message: "Le mot de passe doit contenir au moins un chiffre")]
+    #[Assert\Regex(pattern: '/[^a-zA-Z0-9]/', message: "Le mot de passe doit contenir au moins un caractère special")]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
@@ -74,6 +77,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imgProfile = null;
 
+    #[Assert\File(
+    maxSize: '2M',
+    extensions: ['png', 'jpg', 'jpeg', 'webp'],
+    maxSizeMessage: 'Votre avatar ne doit pas dépasser {{ limit }} {{ suffix }}.',
+    extensionsMessage: 'Format invalide, uniquement png, jpg, jpeg et webp acceptés.',
+    )]
+    #[Vich\UploadableField(mapping: 'avatars', fileNameProperty: 'imgProfile' )]
+    private ?File $imgFile = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
     /**
      * @var Collection<int, ReservationRoom>
      */
@@ -105,19 +119,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
     }
-
-    /**
-     * @see UserInterface
-     */
     public function getRoles(): array
     {
         $roles = $this->roles;
@@ -127,9 +132,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
-    /**
-     * @param list<string> $roles
-     */
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
@@ -137,9 +139,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
     public function getPassword(): ?string
     {
         return $this->password;
@@ -318,7 +317,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+    public function getImgFile(): ?File
+    {
+        return $this->imgFile;
+    }
 
+    public function setImgFile(?File $imgFile): static
+    {
+        $this->imgFile = $imgFile;
+        
+        if($imgFile !== null) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+        return $this;
+    }
     /**
      * @return Collection<int, ReservationRoom>
      */

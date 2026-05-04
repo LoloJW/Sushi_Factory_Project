@@ -38,3 +38,6 @@ J'ai commenté la ligne pour que les envois soient automatique.
 ```composer require symfony/rate-limiter```
 
 ```npm install datatables.net-responsive-bs5``` pour installer le responsive de datatables
+```composer require symfony/rate-limiter``` Le limiteur d'essai pour le nombre de mot de passe, ajusté dans le security.yaml
+
+```composer require vich/uploader-bundle``` le bundle pour afficher des images
