@@ -20,9 +20,13 @@ final class AdministrationController extends AbstractController
         return $this->redirectToRoute('app_employes');
     }
     #[Route('/employes', name: 'app_employes',methods: ['GET'])]
-    public function employes(): Response
+    public function employes(UserRepository $UR): Response
     {
-        return $this->render('/administration/employes.html.twig');
+        $users = $UR->findAll();
+
+        return $this->render('/administration/employes.html.twig',[
+            "users" => $users
+        ]);
     }
     #[Route('/salles', name: 'app_salles',methods: ['GET'])]
     public function salles(): Response
