@@ -575,6 +575,14 @@ tr:hover:not(.first_line) td:hover {
   .box_admin_nav {
     width: 100%;
   }
+  #table-employes {
+    all: revert;
+  }
+  #table-employes_wrapper{
+    all: revert;
+    font-size: 10px;
+  }
+
 // ============================================================
 // FOOTER
 // ============================================================

@@ -36,3 +36,5 @@ Le fichier ```messenger.yaml``` une ligne du routing envoyait des emails de mani
 J'ai commenté la ligne pour que les envois soient automatique.
 
 ```composer require symfony/rate-limiter```
+
+```npm install datatables.net-responsive-bs5``` pour installer le responsive de datatables

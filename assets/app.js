@@ -8,6 +8,7 @@
 import './styles/app.scss';
 import 'bootstrap';
 import DataTable from 'datatables.net-bs5';
+import 'datatables.net-bs5/css/dataTables.bootstrap5.min.css';
 //___________
 import { createApp } from 'vue';
 import App from './vue/app.vue';
@@ -162,3 +163,9 @@ if(verification_event){
         }
     })
 }
+
+// Datatables grilles
+
+document.addEventListener('DOMContentLoaded', () => {
+    new DataTable('#table-employes');
+});
