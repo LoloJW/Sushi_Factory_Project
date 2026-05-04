@@ -15,7 +15,7 @@
     </div>
 
     <div>
-        <table id="table-employes" class="table table-borderless">
+        <table id="table-employes" class="table table-borderless Datatables_Css">
             <thead>
                 <tr>
                     <th>Avatar</th>
@@ -32,7 +32,13 @@
             {% for user in users %}
         
                 <tr>
-                    <td>{{user.imgProfile}}</td>
+            
+                
+                    <td>    {% if user.imgProfile %}
+                    asEZFZEFZEFZER
+                    {% else %}
+                        iiiiiiiiiiiiii
+                {% endif %}</td>
                     <td>{{user.lastName}}</td>
                     <td>{{user.firstName}}</td>
                     <td>{{user.email}}</td>
