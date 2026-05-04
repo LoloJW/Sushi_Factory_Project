@@ -26,6 +26,7 @@ class ReservationEquipment
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $returnAt = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -39,6 +40,7 @@ class ReservationEquipment
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
         return $this;
     }
 
@@ -50,6 +52,7 @@ class ReservationEquipment
     public function setEquipment(?Equipment $equipment): static
     {
         $this->equipment = $equipment;
+
         return $this;
     }
 
@@ -61,6 +64,7 @@ class ReservationEquipment
     public function setRentedAt(\DateTimeImmutable $rentedAt): static
     {
         $this->rentedAt = $rentedAt;
+
         return $this;
     }
 
@@ -72,6 +76,7 @@ class ReservationEquipment
     public function setReturnAt(?\DateTimeImmutable $returnAt): static
     {
         $this->returnAt = $returnAt;
+
         return $this;
     }
 }

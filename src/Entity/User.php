@@ -24,26 +24,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Email(message: "L'email doit avoir un format valide")]
     private ?string $email = null;
 
+    /** @var list<string> $roles */
     #[ORM\Column]
     private array $roles = [];
 
     #[ORM\Column]
-    #[Assert\NotBlank (message: "Le mot de passe est obligatoire")]
-    #[Assert\Length(min: 12, minMessage: "Le mot de passe doit avoir au moins 12 caractères")]
-    #[Assert\Regex(pattern: '/[A-Z]/', message: "Le mot de passe doit contenir au moins une majuscule")]
-    #[Assert\Regex(pattern: '/[a-z]/', message: "Le mot de passe doit contenir au moins une minuscule")]
-    #[Assert\Regex(pattern: '/[0-9]/', message: "Le mot de passe doit contenir au moins un chiffre")]
-    #[Assert\Regex(pattern: '/[!@#$%&*]/', message: "Le mot de passe doit contenir au moins un caractère special")]
+    #[Assert\NotBlank(message: 'Le mot de passe est obligatoire')]
+    #[Assert\Length(min: 12, minMessage: 'Le mot de passe doit avoir au moins 12 caractères')]
+    #[Assert\Regex(pattern: '/[A-Z]/', message: 'Le mot de passe doit contenir au moins une majuscule')]
+    #[Assert\Regex(pattern: '/[a-z]/', message: 'Le mot de passe doit contenir au moins une minuscule')]
+    #[Assert\Regex(pattern: '/[0-9]/', message: 'Le mot de passe doit contenir au moins un chiffre')]
+    #[Assert\Regex(pattern: '/[!@#$%&*]/', message: 'Le mot de passe doit contenir au moins un caractère special')]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank (message: "Le prénom est obligatoire")]
-    #[Assert\Length(min: 2, max: 30, minMessage: "Le prénom doit avoir au moins 2 caractères", maxMessage: "Le prénom doit avoir au plus 30 caractères")]
+    #[Assert\NotBlank(message: 'Le prénom est obligatoire')]
+    #[Assert\Length(min: 2, max: 30, minMessage: 'Le prénom doit avoir au moins 2 caractères', maxMessage: 'Le prénom doit avoir au plus 30 caractères')]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank (message: "Le nom est obligatoire")]
-    #[Assert\Length(min: 2, max: 30, minMessage: "Le nom doit avoir au moins 2 caractères", maxMessage: "Le nom doit avoir au plus 30 caractères")]
+    #[Assert\NotBlank(message: 'Le nom est obligatoire')]
+    #[Assert\Length(min: 2, max: 30, minMessage: 'Le nom doit avoir au moins 2 caractères', maxMessage: 'Le nom doit avoir au plus 30 caractères')]
     private ?string $lastName = null;
 
     #[ORM\Column]

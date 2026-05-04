@@ -70,6 +70,7 @@ class ReservationRoom
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
         return $this;
     }
 
@@ -81,6 +82,7 @@ class ReservationRoom
     public function setRoom(?Rooms $room): static
     {
         $this->room = $room;
+
         return $this;
     }
 
@@ -132,7 +134,6 @@ class ReservationRoom
         return $this;
     }
 
-
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
@@ -153,12 +154,12 @@ class ReservationRoom
     public function setSubject(?Subject $subject): static
     {
         // unset the owning side of the relation if necessary
-        if ($subject === null && $this->subject !== null) {
+        if (null === $subject && null !== $this->subject) {
             $this->subject->setReservation(null);
         }
 
         // set the owning side of the relation if necessary
-        if ($subject !== null && $subject->getReservation() !== $this) {
+        if (null !== $subject && $subject->getReservation() !== $this) {
             $subject->setReservation($this);
         }
 
