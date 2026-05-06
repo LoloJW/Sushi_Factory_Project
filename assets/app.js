@@ -8,6 +8,7 @@
 import './styles/app.scss';
 import 'bootstrap';
 import DataTable from 'datatables.net-bs5';
+import 'datatables.net-bs5/css/dataTables.bootstrap5.min.css';
 //___________
 import { createApp } from 'vue';
 import App from './vue/app.vue';
@@ -163,6 +164,15 @@ if(verification_event){
     })
 }
 
+// Datatables grilles
+
+document.addEventListener('DOMContentLoaded', () => {
+    new DataTable('#table-employes');
+});
+
+
+
+// Gestion Avatar
 const btn_edit_avatar = document.getElementById('avatar_form_imgFile_file');
 const btn_delete_avatar = document.getElementById('avatar_form_imgFile_delete');
 const avatarForm = document.getElementById('avatar_form');
@@ -178,3 +188,16 @@ if (btn_delete_avatar && avatarForm) {
     })
     
 }
+
+//Bouton de delete de l'espace admin
+
+const admin_delete_btns = document.querySelectorAll('.admin_delete_btn');
+
+admin_delete_btns.forEach(admin_delete_btn => {
+        
+        admin_delete_btn.addEventListener('click', (event) => {
+           if(!confirm('Attention, toute suppression est definitive ! Vous êtes sur ?')){
+               event.preventDefault();
+           };
+        })
+    });

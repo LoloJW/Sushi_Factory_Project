@@ -76,7 +76,10 @@ a {
 hr {
   margin: 5px 0;
 }
-
+input[type="file"] {
+    height: auto !important;
+    line-height: 40px;
+}
 // ============================================================
 // GLOBAL
 // ============================================================
@@ -103,12 +106,18 @@ hr {
   cursor: pointer;
 }
 
-.vich-file > div {
+.avatar-profil .vich-file > div {
     display: none;
 }
-
+.vich-file label {
+    margin-right: 8px;
+}
 .character_size {
   font-size: 18px;
+}
+input[type="checkbox"] {
+    height: auto ;
+    width: auto ;
 }
 // ============================================================
 // LOGIN PAGE
@@ -163,6 +172,10 @@ hr {
 
 .enter-login {
   height: 50px;
+}
+.remember_me_input {
+height: 16px !important;
+width: 16px !important;
 }
 
 .password_restriction_box {
@@ -610,6 +623,32 @@ tr:hover:not(.first_line) td:hover {
   .box_admin_nav {
     width: 100%;
   }
+  #table-employes {
+    all: revert;
+  }
+  #table-employes_wrapper{
+    all: revert;
+    font-size: 10px;
+  }
+  .avatar_box_adminspace {
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: solid $primary;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  }
+
+  .avatar_adminspace {
+  height: 80px;
+  width: 80px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  object-fit: cover;
+  }
+
 // ============================================================
 // FOOTER
 // ============================================================

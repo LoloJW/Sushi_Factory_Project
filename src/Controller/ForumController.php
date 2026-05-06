@@ -15,6 +15,7 @@ final class ForumController extends AbstractController
             'controller_name' => 'ForumController',
         ]);
     }
+
     #[Route('/forum/private', name: 'app_forum_private')]
     public function private(): Response
     {
@@ -22,6 +23,7 @@ final class ForumController extends AbstractController
             'controller_name' => 'ForumController',
         ]);
     }
+
     #[Route('/forum/announcements', name: 'app_forum_announcements')]
     public function announcements(): Response
     {

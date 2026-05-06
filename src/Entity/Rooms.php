@@ -13,7 +13,7 @@ class Rooms
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(unique:true)]
+    #[ORM\Column(unique: true)]
     private ?int $roomNumber = null;
 
     #[ORM\Column]

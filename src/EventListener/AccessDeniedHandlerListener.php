@@ -13,23 +13,24 @@ final class AccessDeniedHandlerListener
 {
     public function __construct(
         private Security $security,
-        private RouterInterface $router
-    ){}
+        private RouterInterface $router,
+    ) {
+    }
+
     #[AsEventListener]
     public function onExceptionEvent(ExceptionEvent $event): void
     {
         $exception = $event->getThrowable();
 
-        if(!$exception instanceof AccessDeniedHttpException) {
+        if (!$exception instanceof AccessDeniedHttpException) {
             return;
         }
 
-        if($this->security->getUser()) {
+        if ($this->security->getUser()) {
             $event->setResponse(
                 new RedirectResponse($this->router->generate('app_welcome'))
             );
-        }
-        else {
+        } else {
             $event->setResponse(
                 new RedirectResponse($this->router->generate('app_login'))
             );

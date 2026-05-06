@@ -10,7 +10,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-
 #[AsCommand(
     name: 'app:is-verified-deleted',
     description: 'Vérifier les user verified à supprimer au bout de 1 heure',
@@ -18,12 +17,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class IsVerifiedDeletedCommand extends Command
 {
     public function __construct(
-        private readonly EntityManagerInterface $EM
-    )
-    {
+        private readonly EntityManagerInterface $EM,
+    ) {
         parent::__construct();
     }
-    //tâche Cron
+
+    // tâche Cron
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
@@ -41,7 +40,8 @@ class IsVerifiedDeletedCommand extends Command
         }
 
         $this->EM->flush();
-        $io->success(count($users) . ' Utilisateurs ont été supprimés.');
+        $io->success(count($users).' Utilisateurs ont été supprimés.');
+
         return Command::SUCCESS;
     }
 }

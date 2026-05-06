@@ -35,6 +35,9 @@ D'ailleurs j'ai beaucoup galérer pour un problème d'envoie d'email asynchrone 
 Le fichier ```messenger.yaml``` une ligne du routing envoyait des emails de manière asynchrone (Apparemment ajouté à une liste qui peut être rendu par la suite).
 J'ai commenté la ligne pour que les envois soient automatique.
 
+```composer require symfony/rate-limiter```
+
+```npm install datatables.net-responsive-bs5``` pour installer le responsive de datatables
 ```composer require symfony/rate-limiter``` Le limiteur d'essai pour le nombre de mot de passe, ajusté dans le security.yaml
 
 ```composer require vich/uploader-bundle``` le bundle pour afficher des images

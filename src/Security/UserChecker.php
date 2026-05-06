@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Security;
 
 use App\Entity\User as AppUser;
@@ -17,7 +18,7 @@ class UserChecker implements UserCheckerInterface
             return;
         }
 
-        if ($user->isVerified() == false) {
+        if (false == $user->isVerified()) {
             // the message passed to this exception is meant to be displayed to the user
             throw new CustomUserMessageAccountStatusException("Votre email n'est pas encore confirmé.");
         }
@@ -28,6 +29,5 @@ class UserChecker implements UserCheckerInterface
         if (!$user instanceof AppUser) {
             return;
         }
-
     }
 }
