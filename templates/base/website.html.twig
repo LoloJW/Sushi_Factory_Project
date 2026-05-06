@@ -66,7 +66,12 @@
                                     <a class="nav_link_mon_profile holder_logout" href="{{path('app_logout')}}"><i class="fa-solid fa-arrow-right-from-bracket fa-flip-horizontal"></i> Se Déconnecter</a>
                                 </div>
                                 <div class="ms-lg-3 box_img_profile">
-                                    <a href="{{path('app_my_profile')}}" class="d-flex justify-content-center align-items-center"><img class="img_profile" src="{{asset('images/avatars/'~app.user.imgProfile)}}" alt=""></a>
+                                    <a href="{{path('app_my_profile')}}" class="d-flex justify-content-center align-items-center"><img class="img_profile object-fit-cover" 
+                                    {% if app.user.imgProfile %}
+                                    src="{{asset('images/avatars/'~app.user.imgProfile)}}" 
+                                    {% else %}
+                                    src="{{asset('images/avatar.png')}}"
+                                    {% endif %} alt=""></a>
                                 </div>
                             </li>
                         </ul>

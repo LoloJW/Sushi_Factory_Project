@@ -10,7 +10,7 @@
                     {% if app.user.imgProfile %}
                         <div class="avatar_box" >
                             <label for="avatar_form_imgFile_delete"><i class="fa-solid fa-x text-danger top-0 start-0 position-absolute cursor_pointer"></i></label>
-                            <img src="{{asset('images/avatars/'~app.user.imgProfile)}}" alt="Photo de profil" class="avatar">
+                            <img src="{{asset('images/avatars/'~app.user.imgProfile)}}" alt="Photo de profil" class="avatar object-fit-cover">
                             <label for="avatar_form_imgFile_file">
                                 <div class="edit_btn_profile rounded-circle position-absolute cursor_pointer bg-success d-flex justify-content-center align-items-center">
                                     <i class="fa-solid fa-pencil text-white"></i>
@@ -19,7 +19,7 @@
                         </div>
                         {% else %}
                         <div class="avatar_box" >
-                            <img src="{{asset('images/avatar.png')}}" alt="Photo de profil" class="avatar">
+                            <img src="{{asset('images/avatar.png')}}" alt="Photo de profil" class="avatar object-fit-cover">
                             <label for="avatar_form_imgFile_file">
                                 <div class="edit_btn_profile rounded-circle position-absolute cursor_pointer bg-success d-flex justify-content-center align-items-center">
                                     <i class="fa-solid fa-plus text-white"></i>

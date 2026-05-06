@@ -114,46 +114,4 @@ final class LoginController extends AbstractController
 
         return $this->redirectToRoute('app_login');
     }
-
-    #[Route('/forgot-password', name: 'app_forgot_password')]
-    public function forgotPassword(): Response
-    {
-        if ($this->getUser()) {
-            return $this->redirectToRoute('app_welcome');
-        }
-
-        return $this->render('login/forgot_password.html.twig');
-    }
-
-    #[Route('/forgot-password/confirmation', name: 'app_forgot_password_confirmation')]
-    public function forgotPasswordConfirmation(): Response
-    {
-        if ($this->getUser()) {
-            return $this->redirectToRoute('app_welcome');
-        }
-
-        return $this->render('login/forgot_password_confirmation.html.twig');
-    }
-
-    #[Route('/reset-password/{token}', name: 'app_reset_password')]
-    public function resetPassword(string $token): Response
-    {
-        if ($this->getUser()) {
-            return $this->redirectToRoute('app_welcome');
-        }
-
-        return $this->render('login/reset_password.html.twig', [
-            'token' => $token,
-        ]);
-    }
-
-    #[Route('/reset-password/success', name: 'app_reset_password_success')]
-    public function resetPasswordSuccess(): Response
-    {
-        if ($this->getUser()) {
-            return $this->redirectToRoute('app_welcome');
-        }
-
-        return $this->render('login/reset_password_success.html.twig');
-    }
 }

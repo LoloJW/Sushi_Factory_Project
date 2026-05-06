@@ -1,0 +1,27 @@
+{% extends 'base/website.html.twig' %}
+
+{% block main %}
+    <a href="{{path('app_forum_public')}}" class="btn btn-primary">Retour</a>
+    <div class="card mt-3 p-4">
+        <h1 class="ms-5">{{subject.title}}</h1>
+        <span>{{subject.posts|length}} <i class="fa-regular fa-message"></i></span>
+        <span>{{subject.createdAt|date("d/m/Y")}}</span>
+        <hr>
+        {% for post in subject.posts %}
+        <div>
+            <span>{{post.user.firstname}} {{post.user.lastname}} - {{post.createdAt|date("d/m/Y / H:i")}}</span>
+            <p class="shadow-sm bg-light border border-secondary">
+                {{post.content}}
+            </p>
+        </div> 
+        {% endfor %}
+        <form action="{{path('app_forum_public_subject',{"slug": subject.slug})}}" method="POST">
+            <label for="post">Nouveau message</label>
+            <input type="hidden" name="_token" value="{{csrf_token("new_post")}}">
+            <textarea name="_post" id="post" class="form-control" rows="3"></textarea>
+            <button type="submit" class="btn btn-success">Envoyer</button>
+        </form>
+    </div>
+
+
+{% endblock %}
