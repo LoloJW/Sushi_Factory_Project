@@ -59,19 +59,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, ReservationRoom>
      */
-    #[ORM\OneToMany(targetEntity: ReservationRoom::class, mappedBy: 'user')]
+    #[ORM\OneToMany(targetEntity: ReservationRoom::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $reservationRooms;
 
     /**
      * @var Collection<int, Subject>
      */
-    #[ORM\OneToMany(targetEntity: Subject::class, mappedBy: 'user')]
+    #[ORM\OneToMany(targetEntity: Subject::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $subjects;
 
     /**
      * @var Collection<int, Post>
      */
-    #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'user')]
+    #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $posts;
 
     #[ORM\Column(length: 255, nullable: true)]

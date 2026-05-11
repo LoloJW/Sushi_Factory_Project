@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 class Post
@@ -24,6 +25,7 @@ class Post
     #[ORM\JoinColumn(nullable: false)]
     private ?Subject $subject = null;
 
+    #[Assert\NotBlank(message: 'Les messages ne peuvent être vide')]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 

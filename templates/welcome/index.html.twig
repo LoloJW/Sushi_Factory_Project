@@ -8,7 +8,7 @@
         {# Box d'accueil #}
     <div class='bg-light rounded-4 shadow-sm border border-light-subtle d-flex rounded overflow-hidden w-100 py-4 py-md-0'> 
         <div class="d-flex flex-column justify-content-center ms-5">
-            <h1 class="fw-bold">Bonjour, Laurent ! <i class="fa-regular fa-face-smile-beam"></i></h1><br>
+            <h1 class="fw-bold">Bonjour, {{app.user.firstName}} ! <i class="fa-regular fa-face-smile-beam"></i></h1><br>
             <p class="mb-4">Bienvenue sur votre espace de gestion. <br> Vous avez 2 réunions prévues aujourd'hui. Trouvez rapidement une salle pour votre prochain point d'équipe.</p>
             <a href="{{path('app_reserve')}}" class="btn btn-warning text-center fw-bold align-content-center btn_reserver_welcome"><i class="fa-regular fa-calendar"></i> Réserver une salle</a>
         </div>

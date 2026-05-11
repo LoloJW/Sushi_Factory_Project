@@ -21,7 +21,7 @@ class ReservationRoom
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'reservationRooms')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Rooms $room = null;
 

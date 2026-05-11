@@ -1,43 +1,39 @@
 <template>
-    <h1>Veuillez choisir votre salle et votre créneau :</h1>
-    <div>
+    <div v-if="modalVisible" class="overlay"></div>
+    
+    <h1 :class="{'blurred':modalVisible}">Veuillez choisir votre salle et votre créneau :</h1>
+    <div :class="{'blurred':modalVisible}">
         <table class="table table-light table-bordered align-middle">
             <thead>
                 <tr class="first_line">
-                    <th style="width: 15rem">Salle</th>
-                    <th v-for="heure in heures" :key="heure">{{ heure }}:00</th>
+                    <th scope="">Salle</th>
+                    <th v-for="heure in heures" :key="heure" class="text-center">{{ heure }}:00</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="salle in salles" :key="salle.id">
-                    <th>
-                        <div class="d-flex justify-content-between align-items-center h-auto">
-                            <div>N: {{ salle.roomNumber }}</div>
-                            <div>
-                                <div>Taille: {{ salle.capacity }} places</div>
-                                <div class="d-flex justify-content-evenly">
-                                    <span class="" v-if="salle.projector"><i class="fa-solid fa-video"></i></span>
-                                    <span class="" v-if="salle.whiteboard"><i class="fa-solid fa-chalkboard"></i></span>
-                                </div>
-                            </div>
-                        </div>
-                    </th>
-                    <td v-for="Cell in getCells(salle.id)" :key="Cell.heure" :colspan="Cell.colspan" @click="ouvrirModale(salle.roomNumber, Cell.heure)">
-                        <div v-if="Cell.reservation">
-                            <div class="text-secondary">
-                                <p class="m-auto">Réunion de "{{ Cell.reservation.name }}", de {{ Cell.reservation.timeStart }}h a {{ Cell.reservation.timeEnd }}h</p>
-                                <p class="m-auto">Fait par {{ users.find(user => user.id === Cell.reservation.user).firstName }} , {{ Cell.reservation.type }}</p>
-                            </div>
-                        </div>
-                        <div v-else>
-                            <p style="color: #4dff8b84;" class="fst-italic m-auto text-center">Libre</p>
+                    <th class="first_column">{{ salle.roomNumber }}</th>
+                    <td v-for="cell in getCells(salle.id)" 
+                        :key="cell.heure"
+                        :colspan="cell.colspan"
+                        @click="ouvrirModale(salle, cell.heure)"
+                        class="text-start ps-2"
+                        :class="cell.reservation ? `reserved-${cell.reservation.type}` : ''">
+                        <div v-if="cell.reservation">
+                            <p>Réunion de "{{ cell.reservation.name }}", de {{ cell.reservation.timeStart }}h a {{ cell.reservation.timeEnd }}h</p>
+                            <p>Fait par {{ users.find(u => u.id === cell.reservation?.user).firstName }} , {{ cell.reservation.type }}</p>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
+        <div>
+            <a href="">Précédent</a>
+            <span>Page 6/            </span>
+            <a href="">Suivant</a>
+        </div>
     </div>
-    <div v-if="modaleVisible" class="modale">
+    <div v-if="modalVisible" class="modale">
         <div class="modale-content shadow-sm border border-secondary">
             <div class="d-flex justify-content-between align-items-center pt-3 px-3">
                 <h2 class="fs-5 fw-bold"><i class="fa-solid fa-calendar-days" style="color: #00bba7;"></i> Nouvelle réservation</h2>
@@ -77,7 +73,7 @@
                                 </option>
                             </select>
                         </div>
-                        <!-- <div class="mt-3 d-flex justify-content-center align-items-center" @click="ajouter_un_equipement()" v-if="counter_equipment.length < 3">
+                        <div class="mt-3 d-flex justify-content-center align-items-center" @click="ajouter_un_equipement()" v-if="counter_equipment.length < 3">
                             <button class="btn btn-primary">Ajouter un équipement</button>
                         </div>
                         <div class="mt-3 row box_equipement" v-for="(equipment, i) in counter_equipment" :key="i">
@@ -93,7 +89,7 @@
                                 <input type="text" class="counter_equipment input_modale" readonly :value="equipment.quantity">
                                 <button class="input_modale btn_size_equipment" @click="equipment.quantity++"><i class="fa-solid fa-plus"></i></button>
                             </div>
-                        </div> -->
+                        </div>
                         <div class="mt-2 d-flex justify-content-center align-items-center">
                             <button class="btn btn-white" @click="fermerModale()">Annuler</button>
                             <button class="btn btn-success" @click="validerReservation()">Valider</button>
@@ -110,56 +106,130 @@
                 </div>
             </div>
         </div>
-    </div>  
+    </div>   
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+//const container = document.querySelector('#vue-app');
 
-const container = document.querySelector('#vue-app');
-const rooms = JSON.parse(container.dataset.rooms);
-
-const reservations = JSON.parse(container.dataset.reservationsrooms);
+const avatars = container.dataset.avatars;
 
 const users = JSON.parse(container.dataset.users);
+const collègues = ref(users);
 
+const reservations = JSON.parse(container.dataset.reservationsrooms);
+const SelectedName = ref(null);
+const reservationsRooms = ref(reservations);
+const csrf = container.dataset.csrf;
+
+const rooms = JSON.parse(container.dataset.rooms);
 const salles = ref(rooms);
-const salleSelected = ref(null);
+const SelectedRoom = ref(null);
+const SelectedRoomId = ref(null);
 
 const heures = ref([8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]);
-const heureSelected = ref(null);
+const SelectedHour = ref(null);
+const SelectedHourVisible = ref(null);
+const SelectedEndHour = ref(null);
 
-const modaleVisible = ref(false);
+const heuresFin = computed(() => {
+    const heuresAvecFin = [...heures.value, 23];
+    return heuresAvecFin.filter(h => h > SelectedHour.value);
+});
+
+const types = JSON.parse(container.dataset.reservationtypes);
+
+const modalVisible = ref(false);
+const SelectedType = ref(null);
+
+function ouvrirModale(salle, heure) {
+    SelectedRoom.value = salle.roomNumber;
+    SelectedRoomId.value = salle.id;
+    SelectedHour.value = heure;
+    SelectedHourVisible.value = heure + ":00";
+    SelectedEndHour.value = null;
+    modalVisible.value = true;
+    document.querySelector('header').classList.add('darkened_blurred');
+    document.querySelector('footer').classList.add('blurred');
+}
+
+function fermerModale() {
+    modalVisible.value = false;
+    SelectedEndHour.value = null;
+    document.querySelector('header').classList.remove('darkened_blurred');
+    document.querySelector('footer').classList.remove('blurred');
+}
+
+const counter_equipment = ref([]);
+
+function ajouter_un_equipement() {
+    if (counter_equipment.value.length < 3) {
+        counter_equipment.value.push({ quantity: 1 });
+    }
+}
+
+function décrémenter_un_equipement(index) {
+    if (counter_equipment.value[index].quantity > 1) {
+        counter_equipment.value[index].quantity--;
+    } else {
+        counter_equipment.value.splice(index, 1);
+    }
+}
 
 function getReservationData(salleId, heure) {
-    return reservations.find(r => r.room === salleId && parseInt(r.timeStart) <= heure && parseInt(r.timeEnd)>heure);
+    return reservations.find(r => 
+        r.room === salleId && 
+        parseInt(r.timeStart) <= heure && 
+        parseInt(r.timeEnd) > heure
+    );
 }
+
 function getCells(salleId) {
     const cells = [];
     let heure = 8;
     
     while (heure <= 22) {
-    const reservation = getReservationData(salleId, heure);
-
-        if (reservation) {
-                const duration = parseInt(reservation.timeEnd) - parseInt(reservation.timeStart);
-
-                cells.push({ heure, colspan: duration, reservation });
-                heure += duration;
-            }
-        else {
-                cells.push({ heure, colspan: 1, reservation: null });
-                heure++;
-            }
+        const reservation = getReservationData(salleId, heure);
+        
+        if (reservation && parseInt(reservation.timeStart) === heure) {
+            const duration = parseInt(reservation.timeEnd) - parseInt(reservation.timeStart);
+            cells.push({ heure, colspan: duration, reservation });
+            heure += duration;
+        } else {
+            cells.push({ heure, colspan: 1, reservation: null });
+            heure++;
         }
+    }
     return cells;
 }
-function ouvrirModale(salle, heure) {
-    salleSelected.value = salle
-    heureSelected.value = heure
-    modaleVisible.value = true
-}
-function fermerModale() {
-    modaleVisible.value = false
+
+async function validerReservation() {
+    if (!SelectedRoomId.value || !SelectedHour.value || !SelectedEndHour.value || !SelectedName.value || !SelectedType.value) {
+        alert('Veuillez remplir tous les champs');
+        return;
+    }
+    const response = await fetch('/reservation/create', {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json',
+            'CSRF-Token': csrf
+        },
+        body: JSON.stringify({
+            roomId: SelectedRoomId.value,
+            date: '2026-04-28',
+            timeStart: SelectedHour.value + ':00',
+            timeEnd: SelectedEndHour.value + ':00',
+            type: SelectedType.value,
+            name: SelectedName.value
+        })
+    });
+    if (response.ok) {
+        fermerModale();
+        window.location.reload();
+    } else {
+        const error = await response.json();
+        alert(error.error);
+    }
 }
 </script>

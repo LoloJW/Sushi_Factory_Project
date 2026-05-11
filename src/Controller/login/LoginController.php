@@ -103,7 +103,7 @@ final class LoginController extends AbstractController
         }
 
         try {
-            $emailVerifier->handleEmailConfirmation($request, $user); // en temps normal $this->getUser() suffit mais comme l'utilisateur n'est pas connecté on cherche le user par son ID
+            $emailVerifier->handleEmailConfirmation($request, $user); // en temps normal $this->getUser() suffit si l'utilisateur est connecté, mais comme l'utilisateur n'est pas connecté on cherche le user par son ID
         } catch (VerifyEmailExceptionInterface $exception) {
             $this->addFlash('verify_email_error', $translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
 

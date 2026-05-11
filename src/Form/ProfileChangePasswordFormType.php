@@ -35,9 +35,14 @@ class ProfileChangePasswordFormType extends AbstractType
                 ],
                 'invalid_message' => 'Les mots de passes doivent correspondre',
                 'constraints' => [
+                    new Assert\NotBlank([
+                        "message"=> 'Les champs doivent être remplis',
+                    ]),
                     new Assert\Length([
                         'min' => 12,
-                        'minMessage' => 'Le mot de passe doit avoir au moins 12 caractères',
+                        'max' => 255,
+                        'minMessage' => 'Le mot de passe doit avoir au moins {{ limit }} caractères',
+                        'maxMessage' => 'Le mot de passe doit avoir au plus {{ limit }} caractères',
                     ]),
                     new Assert\Regex([
                         'pattern' => '/[[:upper:]]/',

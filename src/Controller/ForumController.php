@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+use function PHPUnit\Framework\isEmpty;
+
 final class ForumController extends AbstractController
 {
     #[Route('/forum', name: 'app_forum_public', methods: ['GET'])]
@@ -35,6 +37,15 @@ final class ForumController extends AbstractController
 
         if ($request->isMethod('POST')) {
             if ($this->isCsrfTokenValid('new_subject', $request->request->get('_token'))) {
+
+                $post_content = $request->request->get('title');
+                $subject_content = $request->request->get('content');
+
+                if (empty($post_content) || empty($subject_content)) {
+                    $this->addFlash('error', 'Les champs ne peuvent être vide');
+                    return $this->redirectToRoute('app_forum_public_new_subject');
+                }
+
                 $subject = new Subject();
                 $subject->setTitle($request->request->get('title'));
                 $subject->setUser($user);
@@ -51,7 +62,7 @@ final class ForumController extends AbstractController
                 $em->persist($firstPost);
                 $em->flush();
 
-                return $this->redirectToRoute('app_forum_public');
+                return $this->redirectToRoute('app_forum_public_subject', ['slug' => $subject->getSlug()]);
             }
         }
 
@@ -73,13 +84,18 @@ final class ForumController extends AbstractController
         }
         if ($request->isMethod('POST')) {
             if ($this->isCsrfTokenValid('new_post', $request->request->get('_token'))) {
+               
+                $post_content= $request->request->get('_post');
+                if (empty($post_content)) {
+                    $this->addFlash('error', 'Le message ne peut pas être vide');
+                    return $this->redirectToRoute('app_forum_public_subject', ['slug' => $subject->getSlug()]);
+                }
                 $post = new Post();
                 $post->setContent($request->request->get('_post'));
                 $post->setUser($user);
                 $post->setCreatedAt(new \DateTimeImmutable());
 
                 $post->setSubject($subject);
-
                 $em->persist($post);
                 $em->flush();
 

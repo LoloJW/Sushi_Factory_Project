@@ -49,13 +49,20 @@
 							</li>
 							<li class="d-flex mb-1 ms-2 align-items-center">
 								<div class="d-flex flex-column justify-content-center align-items-center">
-									<a class="nav_link_mon_profile holder_profile" href="{{path('app_my_profile')}}">Profile_Nom_Prénom</a>
+									<a class="nav_link_mon_profile holder_profile" href="{{path('app_my_profile')}}">{{app.user.firstName}} {{app.user.lastName}}</a>
 									<a class="nav_link_mon_profile holder_logout" href="{{path('app_logout')}}">
 										<i class="fa-solid fa-arrow-right-from-bracket fa-flip-horizontal"></i>
 										Se Déconnecter</a>
 								</div>
 								<div class="ms-lg-3 box_img_profile">
-									<a href="" class="d-flex justify-content-center align-items-center"><img class="img_profile" src="{{asset('images/Logo_2.png')}}" alt=""></a>
+									<a href="" class="d-flex justify-content-center align-items-center">
+									<img class="img_profile object-fit-cover" src=
+										{% if app.user.imgProfile %}
+											"{{asset("images/avatars/"~app.user.imgProfile)}}"
+										{% else %}
+											"{{asset('images/avatars/avatar.png')}}"
+										{% endif %}
+									alt="Avatar_Utilisateur"></a>
 								</div>
 							</li>
 						</ul>
@@ -106,10 +113,10 @@
 									<a class="holder_nav d-block text-start py-lg-2 px-lg-2 my-lg-1" href="{{path('app_forum')}}">
 										<i class="fa-solid fa-comments"></i>
 										Forum</a>
-									<a class="holder_nav d-block text-start py-lg-2 px-lg-2 my-lg-1" href="{{path('app_equipement')}}">
+									{# <a class="holder_nav d-block text-start py-lg-2 px-lg-2 my-lg-1" href="{{path('app_equipement')}}">
 										<i class="fa-solid fa-desktop"></i>
 									</i>
-									Equipement</a>
+									Equipement</a> #}
 							</div>
 						</div>
 					</div>
