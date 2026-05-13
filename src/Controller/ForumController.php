@@ -12,8 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-use function PHPUnit\Framework\isEmpty;
-
 final class ForumController extends AbstractController
 {
     #[Route('/forum', name: 'app_forum_public', methods: ['GET'])]
@@ -109,9 +107,58 @@ final class ForumController extends AbstractController
     }
 
     #[Route('/forum/private', name: 'app_forum_private')]
-    public function private(): Response
+    public function private(SubjectRepository $SR): Response
     {
-        return $this->render('forum/private.html.twig');
+        $subjects = $SR->findBy(['private' => true]);
+        return $this->render('forum/private/private.html.twig',[
+            "subjects" => $subjects
+        ]);
+    }
+        #[Route('/forum/private/{slug}', name: 'app_forum_private_subject', methods: ['GET', 'POST'])]
+    public function privateSubject(EntityManagerInterface $em, Request $request, string $slug, SubjectRepository $SR): Response
+    {
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
+        $subject = $SR->findOneBy(['slug' => $slug]);
+
+        if ($user != $subject->getUser() && !$subject->getReservation()->getUserInvites()->contains($user)) {
+            $this->addFlash('error', "Vous n'êtes pas invité à cette réunion.");
+            return $this->redirectToRoute('app_forum_private');
+        }
+        if (!$subject) {
+            $this->addFlash('error', "Ce sujet n'existe pas.");
+
+            return $this->redirectToRoute('app_forum_private');
+        }
+        if ($request->isMethod('POST')) {
+            if ($this->isCsrfTokenValid('new_post', $request->request->get('_token'))) {
+               
+                $post_content= $request->request->get('_post');
+                if (empty($post_content)) {
+                    $this->addFlash('error', 'Le message ne peut pas être vide');
+                    return $this->redirectToRoute('app_forum_private_subject', ['slug' => $subject->getSlug()]);
+                }
+                $post = new Post();
+                $post->setContent($request->request->get('_post'));
+                $post->setUser($user);
+                $post->setCreatedAt(new \DateTimeImmutable());
+
+                $post->setSubject($subject);
+                $em->persist($post);
+                $em->flush();
+
+                return $this->redirectToRoute('app_forum_private_subject', ['slug' => $subject->getSlug()]);
+            }
+        }
+
+        $userInvites = $subject->getReservation()->getUserInvites();
+
+        return $this->render('forum/private/private_subject.html.twig', [
+            'subject' => $subject,
+            'userInvites' => $userInvites
+        ]);
     }
 
     #[Route('/forum/announcements', name: 'app_forum_announcements')]

@@ -1,7 +1,7 @@
 <template>
-    <h1>Veuillez choisir votre salle et votre créneau :</h1>
+    <h1 :class="{'blurred':modaleVisible}">Veuillez choisir votre salle et votre créneau :</h1>
     <div>
-        <table class="table table-light table-bordered align-middle">
+        <table :class="{'blurred':modaleVisible}" class="table table-light table-bordered align-middle">
             <thead>
                 <tr class="first_line">
                     <th style="width: 15rem">Salle</th>
@@ -22,7 +22,11 @@
                             </div>
                         </div>
                     </th>
-                    <td v-for="Cell in getCells(salle.id)" :key="Cell.heure" :colspan="Cell.colspan" @click="ouvrirModale(salle.roomNumber, Cell.heure)">
+                    <td v-for="Cell in getCells(salle.id)" 
+                    :key="Cell.heure" 
+                    :class="Cell.reservation ? `reserved-${Cell.reservation.type}` : ''" 
+                    :colspan="Cell.colspan" 
+                    @click="ouvrirModale(salle.roomNumber,salle.id, Cell.heure)">
                         <div v-if="Cell.reservation">
                             <div class="text-secondary">
                                 <p class="m-auto">Réunion de "{{ Cell.reservation.name }}", de {{ Cell.reservation.timeStart }}h a {{ Cell.reservation.timeEnd }}h</p>
@@ -49,16 +53,16 @@
                     <div class="col-lg-7 col-12 bg-light p-3 rounded-5 d-flex flex-column justify-content-between h-100">
                         <div class="mb-2">
                             <label for="salle">Salle</label>
-                            <input type="text" id="salle" class="input_modale" v-model="SelectedRoom" readonly>
+                            <input type="text" id="salle" class="input_modale" v-model="salleSelected" readonly>
                         </div>
                         <div class="row mb-2">
                             <div class="col-6">
                                 <label for="début">Début</label>
-                                <input type="text" id="début" class="input_modale" v-model="SelectedHourVisible" readonly>
+                                <input type="text" id="début" class="input_modale" v-model="heureSelectedVisible" readonly>
                             </div>
                             <div class="col-6">
                                 <label for="fin">Fin</label>
-                                <select class="input_modale" v-model="SelectedEndHour">
+                                <select class="input_modale" v-model="heureFinSelected">
                                     <option v-for="heure in heuresFin" :key="heure" :value="heure">
                                         {{ heure }}:00
                                     </option>
@@ -67,11 +71,11 @@
                         </div>
                         <div class="mb-2">
                             <label for="titre">Titre de la réunion</label>
-                            <input type="text" id="titre" class="input_modale" v-model="SelectedName">
+                            <input type="text" id="titre" class="input_modale" v-model="nomDeRéunion">
                         </div>
                         <div class="mb-2">
                             <label for="titre">Catégorie</label>
-                            <select class="input_modale" v-model="SelectedType">
+                            <select class="input_modale" v-model="typeDeRéunion">
                                 <option v-for="type in types" :key="type.value" :value="type.value">
                                     {{ type.label }}
                                 </option>
@@ -101,9 +105,15 @@
                     </div>
                     <div class="col-lg-5 col-12 border border-light p-3 rounded-5">
                         <div class="row">
-                            <div class="col-4 d-flex flex-column justify-content-center align-items-center profile_name_size" v-for="collègue in collègues" :key="collègue.id">
-                                <div class="box_img_profile_reservation"><img :src="avatars" alt="Collègue" class="img_profile_reservation"></div>
-                                <span class="d-block">{{ collègue.firstName }}</span> <span class="d-block">{{ collègue.lastName }}</span>
+                            <div class="col-4 d-flex flex-column justify-content-center align-items-center profile_name_size mb-2" 
+                            v-for="utilisateur in utilisateurs" :key="utilisateur.id"
+                            @click="ajouterUtilisateur(utilisateur)">
+                                <div class="w-75" :class="invités.some(i => i.id === utilisateur.id) ? 'bg-success rounded-3' : ''">
+                                    <div class="w-100 d-flex justify-content-center align-items-center">
+                                        <div class="box_img_profile_reservation"><img :src="avatars" alt="Profile" class="img_profile_reservation"></div>
+                                    </div>
+                                    <span class="d-block text-center">{{ utilisateur.firstName }}</span> <span class="d-block text-center">{{ utilisateur.lastName }}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -114,25 +124,49 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 const container = document.querySelector('#vue-app');
+
+const avatars = container.dataset.avatars;
 const rooms = JSON.parse(container.dataset.rooms);
-
 const reservations = JSON.parse(container.dataset.reservationsrooms);
-
+const types = JSON.parse(container.dataset.reservationtypes);
 const users = JSON.parse(container.dataset.users);
+const csrf = container.dataset.csrf;
 
 const salles = ref(rooms);
 const salleSelected = ref(null);
+const salleSelectedId = ref(null);
 
 const heures = ref([8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]);
 const heureSelected = ref(null);
+const heureSelectedVisible = ref(null);
+const heuresFin = computed(() => {  //Calcule l'heure de fin dans le select en fonction de l'heure de début choisi. Computed repère le changement de chaque ref et recalcule l'ensemble.
+    const heuresDeFinListe = [];
+    let counter = heureSelected.value + 1;
+    while(counter <= 23) {
+        heuresDeFinListe.push(counter);
+        counter++;
+    }
+    return heuresDeFinListe;
+});
+const heureFinSelected = ref(null);
+
+const reservationsRooms = ref(reservations);
+const nomDeRéunion = ref(null);
+const typeDeRéunion = ref(null);
+
+const utilisateurs = ref(users);
+const invités = ref([]);
+
 
 const modaleVisible = ref(false);
 
 function getReservationData(salleId, heure) {
-    return reservations.find(r => r.room === salleId && parseInt(r.timeStart) <= heure && parseInt(r.timeEnd)>heure);
+    return reservations.find(reservation => reservation.roomId === salleId && 
+    parseInt(reservation.timeStart) <= heure && 
+    parseInt(reservation.timeEnd)>heure);
 }
 function getCells(salleId) {
     const cells = [];
@@ -154,12 +188,66 @@ function getCells(salleId) {
         }
     return cells;
 }
-function ouvrirModale(salle, heure) {
+function ouvrirModale(salle,salleId, heure) {
     salleSelected.value = salle
     heureSelected.value = heure
+    salleSelectedId.value = salleId
+    heureSelectedVisible.value = heure + ":00"
     modaleVisible.value = true
+    document.querySelector('header').classList.add('darkened_blurred');
+    document.querySelector('footer').classList.add('blurred');
+}
+function ajouterUtilisateur(utilisateur){
+    const checkUser = invités.value.find(i => i.id === utilisateur.id);
+    if (!checkUser) {
+        invités.value.push(utilisateur);
+    }
+    else {
+        invités.value = invités.value.filter
+        (i => i.id !== utilisateur.id);
+    }
 }
 function fermerModale() {
-    modaleVisible.value = false
+    modaleVisible.value = false;
+    heureFinSelected.value = null;
+    invités.value = [];
+    document.querySelector('header').classList.remove('darkened_blurred');
+    document.querySelector('footer').classList.remove('blurred');
 }
+
+async function validerReservation() {
+    if (!heureSelected.value || 
+    !heureFinSelected.value || 
+    !nomDeRéunion.value || 
+    !typeDeRéunion.value ||
+    !salleSelected.value ||
+    !salleSelectedId.value) {
+        return alert('Veuillez remplir tous les champs.');
+    }
+    else {
+            const requete = await fetch('/reservation/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'CSRF-Token': csrf
+                },
+                body: JSON.stringify({
+                    roomId: salleSelectedId.value,
+                    timeStart: heureSelected.value + ':00',
+                    timeEnd: heureFinSelected.value + ':00',
+                    type: typeDeRéunion.value,
+                    name: nomDeRéunion.value,
+                    invitedUsers: invités.value.map(i => i.id)
+                })
+            });
+            if(requete.ok){
+                fermerModale();
+                window.location.reload();
+            }
+            else{
+                const error = await requete.json();
+                alert(error.error);
+            }
+        }
+    }
 </script>

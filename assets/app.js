@@ -169,6 +169,7 @@ if(verification_event){
 document.addEventListener('DOMContentLoaded', () => {
     new DataTable('#table-employes');
     new DataTable('#table-salles');
+    new DataTable('#table-reservations');
 });
 
 
