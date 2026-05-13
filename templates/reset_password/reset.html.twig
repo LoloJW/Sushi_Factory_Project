@@ -1,0 +1,34 @@
+{% extends 'base/login.html.twig' %}
+
+{% block title %}Reset your password{% endblock %}
+
+{% block main %}
+     <div class="d-flex justify-content-center my-2">
+        <div class="form_center shadow p-3 d-block">
+            <div class="d-flex justify-content-center align-items-center my-3"><h2 class="fw-semibold fs-4">Requête changement de mot de passe</h2></div>
+            <div class="middle_form">
+                {{ form_start(resetForm,{'attr':{'class':'w-100'}}) }}
+                    <label for="{{resetForm.plainPassword.first.vars.id}}">Nouveau mot de passe</label>
+                    {{ form_widget(resetForm.plainPassword.first, {'attr':{'class':'my-2 password_1'}}) }}
+                    <span class="text-danger">{{form_errors(resetForm.plainPassword.first)}}</span>
+                    <label for="{{resetForm.plainPassword.second.vars.id}}">Confirmez le mot de passe</label>
+                    {{ form_widget(resetForm.plainPassword.second, {'attr':{'class':'my-2 password_2'}}) }}
+                    <span class="text-danger">{{form_errors(resetForm.plainPassword.second)}}</span>
+
+                    <div class="password_restriction_box mt-3 mb-2">
+                    <p class="fw-bold">Le mot de passe doit contenir :</p>
+                    <ul>
+                        <li class="char_mdp">Au moins 12 caractères</li>
+                        <li class="majuscule_mdp">Au moins une majuscule</li>
+                        <li class="minuscule_mdp">Au moins une minuscule</li>
+                        <li class="chiffre_mdp">Au moins un chiffre</li>
+                        <li class="special_char_mdp">Au moins un caractère special</li>
+                        <li class="match_mdp">Les mots de passe doivent correspondre</li>
+                    </ul>
+                </div>
+                    <button class="btn btn-primary mt-3 verification_event">Confirmer la réinitialisation</button>
+                {{ form_end(resetForm) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

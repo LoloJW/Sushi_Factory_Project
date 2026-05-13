@@ -32,6 +32,14 @@ class ReservationRoomRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findByDate(\DateTime $date): array
+    {
+        return $this->createQueryBuilder('reserve')
+            ->where('reserve.reservedFor = :date')
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->getResult();
+    }
     //    public function findOneBySomeField($value): ?ReservationRoom
     //    {
     //        return $this->createQueryBuilder('r')

@@ -103,7 +103,7 @@ final class LoginController extends AbstractController
         }
 
         try {
-            $emailVerifier->handleEmailConfirmation($request, $user); // en temps normal $this->getUser() suffit mais comme l'utilisateur n'est pas connecté on cherche le user par son ID
+            $emailVerifier->handleEmailConfirmation($request, $user); // en temps normal $this->getUser() suffit si l'utilisateur est connecté, mais comme l'utilisateur n'est pas connecté on cherche le user par son ID
         } catch (VerifyEmailExceptionInterface $exception) {
             $this->addFlash('verify_email_error', $translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
 
@@ -113,47 +113,5 @@ final class LoginController extends AbstractController
         $this->addFlash('success', 'Votre email a été confirmé.');
 
         return $this->redirectToRoute('app_login');
-    }
-
-    #[Route('/forgot-password', name: 'app_forgot_password')]
-    public function forgotPassword(): Response
-    {
-        if ($this->getUser()) {
-            return $this->redirectToRoute('app_welcome');
-        }
-
-        return $this->render('login/forgot_password.html.twig');
-    }
-
-    #[Route('/forgot-password/confirmation', name: 'app_forgot_password_confirmation')]
-    public function forgotPasswordConfirmation(): Response
-    {
-        if ($this->getUser()) {
-            return $this->redirectToRoute('app_welcome');
-        }
-
-        return $this->render('login/forgot_password_confirmation.html.twig');
-    }
-
-    #[Route('/reset-password/{token}', name: 'app_reset_password')]
-    public function resetPassword(string $token): Response
-    {
-        if ($this->getUser()) {
-            return $this->redirectToRoute('app_welcome');
-        }
-
-        return $this->render('login/reset_password.html.twig', [
-            'token' => $token,
-        ]);
-    }
-
-    #[Route('/reset-password/success', name: 'app_reset_password_success')]
-    public function resetPasswordSuccess(): Response
-    {
-        if ($this->getUser()) {
-            return $this->redirectToRoute('app_welcome');
-        }
-
-        return $this->render('login/reset_password_success.html.twig');
     }
 }

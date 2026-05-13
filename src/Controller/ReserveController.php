@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\ReservationRoom;
+use App\Entity\Subject;
 use App\Entity\User;
 use App\Enum\ReservationType;
 use App\Repository\ReservationRoomRepository;
@@ -41,17 +42,19 @@ final class ReserveController extends AbstractController
             ];
         }, $rooms);
 
-        $reservationsRooms = $RRR->findAll();
+        $today = new \DateTime('today', new \DateTimeZone('Europe/Paris'));
+        $reservationsRooms = $RRR->findByDate($today);
+
         $reservationRoomsData = array_map(function ($reservationsRoom) {
             return [
                 'id' => $reservationsRoom->getId(),
-                'room' => $reservationsRoom->getRoom()->getId(),
+                'roomId' => $reservationsRoom->getRoom()->getId(),
                 'date' => $reservationsRoom->getReservedFor()->format('Y-m-d'),
                 'timeStart' => $reservationsRoom->getTimeStart()->format('H:i'),
                 'timeEnd' => $reservationsRoom->getTimeEnd()->format('H:i'),
                 'user' => $reservationsRoom->getUser()->getId(),
                 'type' => $reservationsRoom->getType()->value,
-                'name' => $reservationsRoom->getName(),
+                'name' => $reservationsRoom->getName(),   
             ];
         }, $reservationsRooms);
 
@@ -80,7 +83,8 @@ final class ReserveController extends AbstractController
         $room = $RR->find($data['roomId']);
         $timeStart = new \DateTime($data['timeStart']);
         $timeEnd = new \DateTime($data['timeEnd']);
-        $date = new \DateTime($data['date']);
+        $date = new \DateTime('today', new \DateTimeZone('Europe/Paris'));
+        $invitedUsers = $data['invitedUsers'];
 
         $conflict = $RRR->findConflict($room, $timeStart, $timeEnd, $date);
         if ($conflict) {
@@ -95,14 +99,28 @@ final class ReserveController extends AbstractController
         $reservation = new ReservationRoom();
         $reservation->setUser($user);
         $reservation->setRoom($RR->find($data['roomId']));
-        $reservation->setReservedFor(new \DateTime($data['date']));
+        $reservation->setReservedFor($date);
         $reservation->setTimeStart(new \DateTime($data['timeStart']));
         $reservation->setName($data['name']);
         $reservation->setTimeEnd(new \DateTime($data['timeEnd']));
         $reservation->setType(ReservationType::from($data['type']));
         $reservation->setCreatedAt(new \DateTimeImmutable());
 
+        foreach ($invitedUsers as $invitedUser) {
+            $guest = $em->getRepository(User::class)->find($invitedUser);
+            $reservation->addUserInvite($guest);
+        }
+
+        $reunion = new Subject();
+        $reunion->setPrivate(true);
+        $reunion->setTitle($data['name']);
+        $reunion->setReservation($reservation);
+        $reunion->setCreatedAt(new \DateTimeImmutable());
+        $reunion->setUser($user);
+        
         $em->persist($reservation);
+        $em->persist($reunion);
+
         $em->flush();
 
         return $this->json(['success' => true]);

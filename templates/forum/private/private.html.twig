@@ -1,0 +1,37 @@
+{% extends 'base/website.html.twig' %}
+{% block main %}
+    {% include "forum/nav_forum.html.twig" %}
+    <div class="row g-3 m-0">
+        {% for message in app.flashes("error") %}
+            <span class="text-danger fw-semibold">{{message}}</span>
+        {% endfor %}
+        {% for subject in subjects %}
+        {% if app.user == subject.user or subject.reservation.userInvites.contains(app.user) %}
+          
+        <div class="col-4">
+            <div class="box_subject rounded-4 p-4 position-relative">
+                <div class="d-flex flex-column justify-content-between h-100">
+                    <div><span class="f_reunion">Private</span> <span class="time_message">• Crée le {{subject.createdAt|date("d/m/Y")}}</span></div>
+                    <a href="{{path("app_forum_private_subject",{"slug": subject.slug})}}" class="stretched-link"></a>
+                     {# Lien vers la page du sujet, s'étend sur l'ensemble de la div #}
+                    {# Le lien même invisible influ sur le justify-content-between, ça crée un petit margin à son emplacement  #}
+                    <div class="h-50">
+                        <h3 class="fw-bold fs-5 mb-3">{{subject.title}}</h3>
+                        {% if subject.posts.first %}
+                            <p class="text-truncate">{{ subject.posts.first.content }}</p>
+                        {% endif %}
+                        
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>{{subject.user.firstname}} {{subject.user.lastname}}</span>
+                        <button class="btn-like position-relative" style="z-index: 2" data-id="1"> <i class="fa-regular fa-thumbs-up"></i><span class="like-count">12</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

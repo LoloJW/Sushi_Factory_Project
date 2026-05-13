@@ -40,4 +40,8 @@ J'ai commenté la ligne pour que les envois soient automatique.
 ```npm install datatables.net-responsive-bs5``` pour installer le responsive de datatables
 ```composer require symfony/rate-limiter``` Le limiteur d'essai pour le nombre de mot de passe, ajusté dans le security.yaml
 
-```composer require vich/uploader-bundle``` le bundle pour afficher des images
+```composer require vich/uploader-bundle``` le bundle pour gérer et afficher des images
+
+```composer require stof/doctrine-extensions-bundle``` Bundle pour gérer un slug pour le forum
+
+```composer require symfonycasts/reset-password-bundle```Bundle pour gérer le reset de mot de passe

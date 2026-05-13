@@ -2,82 +2,83 @@
 
 {% block main %}
 <div class="bg-light">
-
-<div class="container-fluid px-4 py-4">
-    <div class="d-flex justify-content-between align-items-start mb-4">
-        <div>
-            <h1 class="fw-bold fs-4 mb-0">Gestion des Employés</h1>
-            <p class="text-muted small mb-0">Vue d'ensemble et modifications</p>
+    <div class="container-fluid px-4 py-4">
+        <div class="d-flex justify-content-between align-items-start mb-4">
+            <div>
+                <h1 class="fw-bold fs-4 mb-0">Gestion des Employés</h1>
+                <p class="text-muted small mb-0">Vue d'ensemble et modifications</p>
+            </div>
+            <button class="btn btn-success text-white fw-semibold px-3 py-2">
+                <i class="fa-solid fa-circle-plus me-1"></i> Ajouter
+            </button>
         </div>
-        <button class="btn btn-success text-white fw-semibold px-3 py-2">
-            <i class="fa-solid fa-circle-plus me-1"></i> Ajouter
-        </button>
-    </div>
-    {% for message in app.flashes('success') %}
-        <span class="text-success fw-semibold">{{message}}</span>
-    {% endfor %}
+        {% for message in app.flashes('success') %}
+            <span class="text-success fw-semibold">{{message}}</span>
+        {% endfor %}
 
-    <div>
-        <table id="table-employes" class="table table-borderless Datatables_Css" style="cursor:default">
-            <thead>
-                <tr>
-                    <th>Avatar</th>
-                    <th>Nom</th>
-                    <th>Prénom</th>
-                    <th>Email</th>
-                    <th>Rôle</th>
-                    <th>Inscrit Depuis</th>
-                    <th>Statut</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for user in users %}
-                <tr class="align-middle" style="cursor:default">
-                    <td style="cursor:default">    
-                    {% if user.imgProfile %}
-                        <img src="{{asset("images/avatars/"~user.imgProfile)}}" alt="avatar_{{user.firstName}}" class="avatar_adminspace">
-                    {% else %}
-                        <img src="{{asset("images/avatar.png")}}" alt="avatar_{{user.firstName}}" class="avatar_adminspace">
-                    {% endif %}
-                    </td>
-                    <td style="cursor:default">{{user.lastName}}</td>
-                    <td style="cursor:default">{{user.firstName}}</td>
-                    <td style="cursor:default">{{user.email}}</td>
-                    <td>
-                        {% if "ROLE_ADMIN" in user.roles %}Administrateur
-                        {% elseif "ROLE_USER" in user.roles %}Utilisateur
+        <div>
+            <table id="table-employes" class="table" style="cursor:default">
+                <thead>
+                    <tr>
+                        <th>Avatar</th>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Email</th>
+                        <th>Rôle</th>
+                        <th>Inscrit Depuis</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr class="align-middle" style="cursor:default">
+                        <td style="cursor:default">    
+                        {% if user.imgProfile %}
+                            <div class="d-flex justify-content-center"><img src="{{asset("images/avatars/"~user.imgProfile)}}" alt="avatar_{{user.firstName}}" class="avatar_adminspace  border border-dark rounded-circle"></div>
                         {% else %}
-                            Error
+                            <div class="d-flex justify-content-center"><img src="{{asset("images/avatar.png")}}" alt="avatar_{{user.firstName}}" class="avatar_adminspace  border border-dark rounded-circle"></div>
                         {% endif %}
-                    </td>
-                    
-                    {# <td style="cursor:default">{{user.roles[0]}}</td> #}
-                    <td style="cursor:default">{{user.joinedAt|date('d/m/Y')}}</td>
-                    <td style="cursor:default">
-                    {% if user.isVerified == true %}
-                        Vérifié
-                    {% else %}
-                        Non Vérifié
-                    {% endif %}
-                    </td>
-                    <td style="cursor:default" class="text-center">
-                        <div class="my-1">
-                            <a href="{{path("app_employes_edit", {"id":user.id})}}" class="text-center">
-                                <i class="fa-regular fa-pen-to-square text-secondary" style="font-size: 20px;"></i>
-                            </a>
-                        </div>
-                        <form class="my-1" action="{{path("app_employes_delete", {"id":user.id})}}" method="POST">
-                            <input type="hidden" name="_token" value="{{csrf_token('delete'~user.id)}}">
-                            <button type="submit" class="admin_delete_btn btn btn-link p-0">
-                                <i class="fa-regular fa-trash-can text-danger" style="font-size: 20px;"></i>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                        </td>
+                        <td style="cursor:default">{{user.lastName}}</td>
+                        <td style="cursor:default">{{user.firstName}}</td>
+                        <td style="cursor:default">{{user.email}}</td>
+                        <td>
+                            {% if "ROLE_ADMIN" in user.roles %}Administrateur
+                            {% elseif "ROLE_USER" in user.roles %}Utilisateur
+                            {% else %}
+                                Error
+                            {% endif %}
+                        </td>
+                        
+                        {# <td style="cursor:default">{{user.roles[0]}}</td> #}
+                        <td style="cursor:default">{{user.joinedAt|date('d/m/Y')}}</td>
+                        <td style="cursor:default">
+                        {% if user.isVerified == true %}
+                            Vérifié
+                        {% else %}
+                            Non Vérifié
+                        {% endif %}
+                        </td>
+                        <td style="cursor:default" class="text-center">
+                            <div class="my-1">
+                                <a href="{{path("app_employes_edit", {"id":user.id})}}" class="text-center">
+                                    <i class="fa-regular fa-pen-to-square text-secondary" style="font-size: 20px;"></i>
+                                </a>
+                            </div>
+                            <form class="my-1" action="{{path("app_employes_delete", {"id":user.id})}}" method="POST">
+                                <input type="hidden" name="_token" value="{{csrf_token('delete'~user.id)}}">
+                                <button type="submit" class="admin_delete_btn btn btn-link p-0">
+                                    <i class="fa-regular fa-trash-can text-danger" style="font-size: 20px;"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
     </div>
 </div>
 

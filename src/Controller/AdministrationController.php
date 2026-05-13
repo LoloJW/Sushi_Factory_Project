@@ -2,10 +2,15 @@
 
 namespace App\Controller;
 
-use App\Enum\ReservationType;
+use App\Entity\Announcement;
+use App\Entity\Rooms;
 use App\Form\Admin\EmployeFormType;
+use App\Form\AnnonceFormType;
+use App\Form\CreateRoomFormType;
+use App\Repository\AnnouncementRepository;
 use App\Repository\ReservationRoomRepository;
 use App\Repository\RoomsRepository;
+use App\Repository\SubjectRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,22 +42,11 @@ final class AdministrationController extends AbstractController
     {
         $user = $UR->find($id);
         if (!$user) {
-            throw $this->createNotFoundException();
+            $this->addFlash('error', 'Employé introuvable.');
+            return $this->redirectToRoute('app_employes');
         }
         if (!$this->isCsrfTokenValid('delete'.$id, $request->request->get('_token'))) {
             return $this->redirectToRoute('app_employes');
-        }
-        foreach ($user->getReservationRooms() as $reservationsRoom) {
-            $EM->remove($reservationsRoom);
-        }
-        foreach ($user->getSubjects() as $subject) {
-            $EM->remove($subject);
-        }
-        foreach ($user->getPosts() as $post) {
-            $EM->remove($post);
-        }
-        foreach ($user->getReservationRoomsInvites() as $getReservationRoomsInvites) {
-            $EM->remove($getReservationRoomsInvites);
         }
 
         $EM->remove($user);
@@ -86,66 +80,161 @@ final class AdministrationController extends AbstractController
     }
 
     #[Route('/salles', name: 'app_salles', methods: ['GET'])]
-    public function salles(): Response
+    public function salles(RoomsRepository $RR): Response
     {
-        return $this->render('/administration/salles.html.twig');
+        $rooms = $RR->findAll();
+        return $this->render('/administration/salles/salles.html.twig',[
+            "rooms" => $rooms
+        ]);
+    }
+    #[Route('/salles/edit{id}', name: 'app_edit_salles', methods: ['GET','POST'])]
+    public function editSalles(int $id,Request $request, EntityManagerInterface $em): Response
+    {
+        $room = $em->getRepository(Rooms::class)->find($id);
+        $form = $this->createForm(CreateRoomFormType::class, $room);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $em->persist($room);
+            $em->flush();
+            $this->addFlash('success', 'Salle modifié avec succès.');
+            return $this->redirectToRoute('app_salles');
+        }
+        return $this->render('/administration/salles/edit_salles.html.twig',[
+            "form" => $form->createView(),
+        ]);
+    }
+    #[Route('/salles/create', name: 'app_new_salles', methods: ['GET','POST'])]
+    public function newSalles(Request $request, EntityManagerInterface $em): Response
+    {
+        $room = new Rooms();
+        $form = $this->createForm(CreateRoomFormType::class, $room);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $em->persist($room);
+            $em->flush();
+            $this->addFlash('success', 'Salle ajoutée avec succès.');
+            return $this->redirectToRoute('app_salles');
+        }
+        return $this->render('/administration/salles/new_salles.html.twig',[
+            "form" => $form->createView(),
+        ]);
+    }
+    #[Route('/salles/delete{id}', name: 'app_delete_salles', methods: ['GET','POST'])]
+    public function deleteSalles(int $id, Request $request, RoomsRepository $RR, EntityManagerInterface $em): Response
+    {
+        $rooms = $RR->find($id);
+        if (!$rooms) {
+            $this->addFlash('error', 'Cette salle n\'existe pas.');
+            return $this->redirectToRoute('app_salles');
+        }
+        if (!$this->isCsrfTokenValid("_token".$id, $request->request->get("danger"))) {
+
+          
+        $this->addFlash('error', 'Une erreur est survenue.');
+            return $this->redirectToRoute('app_salles');
+        }
+
+        $em->remove($rooms);
+        $em->flush();
+        $this->addFlash('success', 'Salle supprimée avec succès.');
+        return $this->redirectToRoute('app_salles');
+            
+        
     }
 
+
     #[Route('/reservations', name: 'app_reservations', methods: ['GET'])]
-    public function reservations(UserRepository $UR, ReservationRoomRepository $RRR, RoomsRepository $RR): Response
+    public function reservations( ReservationRoomRepository $RRR): Response
     {
-        $users = $UR->findAll();
-        $usersData = array_map(function ($user) {
-            return [
-                'id' => $user->getId(),
-                'firstName' => $user->getFirstName(),
-                'lastName' => $user->getLastName(),
-                'avatar' => $user->getImgProfile(),
-            ];
-        }, $users);
-
-        $rooms = $RR->findAll();
-        $roomsData = array_map(function ($room) {
-            return [
-                'id' => $room->getId(),
-                'roomNumber' => $room->getRoomNumber(),
-                'capacity' => $room->getCapacity(),
-                'projector' => $room->isProjector(),
-                'whiteboard' => $room->isWhiteboard(),
-            ];
-        }, $rooms);
-
-        $reservationsRooms = $RRR->findAll();
-        $reservationRoomsData = array_map(function ($reservationsRoom) {
-            return [
-                'id' => $reservationsRoom->getId(),
-                'room' => $reservationsRoom->getRoom()->getId(),
-                'date' => $reservationsRoom->getReservedFor()->format('Y-m-d'),
-                'timeStart' => $reservationsRoom->getTimeStart()->format('H:i'),
-                'timeEnd' => $reservationsRoom->getTimeEnd()->format('H:i'),
-                'user' => $reservationsRoom->getUser()->getId(),
-            ];
-        }, $reservationsRooms);
-        $reservationsType = array_map(fn ($type) => [
-            'value' => $type->value,
-            'label' => $type->name,
-        ], ReservationType::cases());
-
-        return $this->render('/administration/reservations.html.twig', [
-            'users' => $usersData,
-            'rooms' => $roomsData,
-            'reservations' => $reservationRoomsData,
-            'reservationsType' => $reservationsType,
-            'controller_name' => 'ReserveController',
+        $reservations = $RRR->findAll();
+        
+        return $this->render('/administration/reservations/reservations.html.twig',[
+            "reservations" => $reservations
         ]);
+    }
+      #[Route('/reservations/delete{id}', name: 'app_delete_reservations', methods: ['GET','POST'])]
+    public function deleteReservation(int $id, Request $request, ReservationRoomRepository $RRR, EntityManagerInterface $em): Response
+    {
+        $reservations = $RRR->find($id);
+        if (!$reservations) {
+            $this->addFlash('error', 'Cette réservation n\'existe pas.');
+            return $this->redirectToRoute('app_reservations');
+        }
+        if (!$this->isCsrfTokenValid("reservation".$id, $request->request->get("_token"))) {
+
+          
+        $this->addFlash('error', 'Une erreur est survenue.');
+            return $this->redirectToRoute('app_reservations');
+        }
+
+        $em->remove($reservations);
+        $em->flush();
+        $this->addFlash('success', 'Réservation supprimée avec succès.');
+        return $this->redirectToRoute('app_reservations');
+            
+        
     }
 
     #[Route('/forum', name: 'app_forum', methods: ['GET'])]
-    public function forum(): Response
+    public function forum(SubjectRepository $SR, AnnouncementRepository $AR): Response
     {
-        return $this->render('/administration/forum.html.twig');
+        $annonces = $AR->findAll();
+        $privateSubjects = $SR->findBy(['private' => true]);
+        $publicSubjects = $SR->findBy(['private' => false]);
+        return $this->render('/administration/forum/forum.html.twig',[
+            "annonces" => $annonces,
+            "publicSubjects" => $publicSubjects,
+            "privateSubjects" => $privateSubjects]);
+    }
+    #[Route('/forum/subject', name: 'app_admin_forum_subject', methods: ['GET'])]
+    public function forumSubject(SubjectRepository $SR): Response
+    {
+        $publicSubjects = $SR->findBy(['private' => false]);
+        return $this->render('/administration/forum/subject.html.twig',[
+            "publicSubjects" => $publicSubjects
+        ]);
     }
 
+    #[Route('/forum/private', name: 'app_admin_forum_private', methods: ['GET'])]
+    public function forumPrivate(SubjectRepository $SR): Response
+    {
+        $privateSubjects = $SR->findBy(['private' => true]);
+        return $this->render('/administration/forum/private.html.twig',[
+            "privateSubjects" => $privateSubjects
+        ]);
+    }
+
+    #[Route('/forum/annonce', name: 'app_admin_forum_annonce', methods: ['GET'])]
+    public function forumAnnonce(AnnouncementRepository $AR): Response
+    {
+        $annonces = $AR->findAll();
+        return $this->render('/administration/forum/annonce.html.twig',[
+            "annonces" => $annonces
+        ]);
+    }
+    #[Route('/forum/annonce/create', name: 'app_admin_forum_new_annonce', methods: ['GET', 'POST'])]
+    public function forumNewAnnonce(Request $request, EntityManagerInterface $em): Response
+    {
+        $annonce = new Announcement();
+        $form = $this->createForm(AnnonceFormType::class, $annonce);
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            $annonce->setCreatedAt(new \DateTimeImmutable());
+            $annonce->setUser($this->getUser());
+            $em->persist($annonce);
+            $em->flush();
+            $this->addFlash('success', 'Annonce ajoutée avec succès.');
+            return $this->redirectToRoute('app_admin_forum_annonce');
+        }
+        return $this->render('/administration/forum/new_annonce.html.twig',[
+            "form" => $form->createView()
+        ]);
+    }
     #[Route('/equipement', name: 'app_equipement', methods: ['GET'])]
     public function equipement(): Response
     {

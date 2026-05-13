@@ -29,11 +29,11 @@ class EmployeFormType extends AbstractType
             ->add('firstName', TextType::class)
             ->add('lastName', TextType::class)
             ->add('isVerified', CheckboxType::class, [
-                    'required' => false, ])
+                'required' => false, ])
             ->add('imgFile', VichFileType::class, [
-                    'download_uri' => false,
-                    'allow_delete' => true,
-                ])
+                'download_uri' => false,
+                'allow_delete' => true,
+            ])
         ;
     }
 
