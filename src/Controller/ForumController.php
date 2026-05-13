@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Post;
 use App\Entity\Subject;
 use App\Entity\User;
+use App\Repository\AnnouncementRepository;
 use App\Repository\SubjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -162,8 +163,30 @@ final class ForumController extends AbstractController
     }
 
     #[Route('/forum/announcements', name: 'app_forum_announcements')]
-    public function announcements(): Response
+    public function announcements(AnnouncementRepository $AR): Response
     {
-        return $this->render('forum/announcements.html.twig');
+        $annonces = $AR->findAll();
+        return $this->render('forum/announcements.html.twig',[
+            "annonces" => $annonces
+        ]);
+    }
+    #[Route('/forum/annonces/{slug}', name: 'app_forum_annonces_subject', methods: ['GET', 'POST'])]
+    public function annoncesSubject( string $slug, AnnouncementRepository $AR): Response
+    {
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
+        $annonce = $AR->findOneBy(['slug' => $slug]);
+
+        if (!$annonce) {
+            $this->addFlash('error', "Cette annonce n'existe pas.");
+
+            return $this->redirectToRoute('app_forum_announcements');
+        }
+
+        return $this->render('forum/annonce_subject.html.twig', [
+            'annonce' => $annonce
+        ]);
     }
 }

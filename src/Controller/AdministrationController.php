@@ -2,11 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Announcement;
 use App\Entity\Rooms;
 use App\Form\Admin\EmployeFormType;
+use App\Form\AnnonceFormType;
 use App\Form\CreateRoomFormType;
+use App\Repository\AnnouncementRepository;
 use App\Repository\ReservationRoomRepository;
 use App\Repository\RoomsRepository;
+use App\Repository\SubjectRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -152,13 +156,85 @@ final class AdministrationController extends AbstractController
             "reservations" => $reservations
         ]);
     }
-
-    #[Route('/forum', name: 'app_forum', methods: ['GET'])]
-    public function forum(): Response
+      #[Route('/reservations/delete{id}', name: 'app_delete_reservations', methods: ['GET','POST'])]
+    public function deleteReservation(int $id, Request $request, ReservationRoomRepository $RRR, EntityManagerInterface $em): Response
     {
-        return $this->render('/administration/forum/forum.html.twig');
+        $reservations = $RRR->find($id);
+        if (!$reservations) {
+            $this->addFlash('error', 'Cette réservation n\'existe pas.');
+            return $this->redirectToRoute('app_reservations');
+        }
+        if (!$this->isCsrfTokenValid("reservation".$id, $request->request->get("_token"))) {
+
+          
+        $this->addFlash('error', 'Une erreur est survenue.');
+            return $this->redirectToRoute('app_reservations');
+        }
+
+        $em->remove($reservations);
+        $em->flush();
+        $this->addFlash('success', 'Réservation supprimée avec succès.');
+        return $this->redirectToRoute('app_reservations');
+            
+        
     }
 
+    #[Route('/forum', name: 'app_forum', methods: ['GET'])]
+    public function forum(SubjectRepository $SR, AnnouncementRepository $AR): Response
+    {
+        $annonces = $AR->findAll();
+        $privateSubjects = $SR->findBy(['private' => true]);
+        $publicSubjects = $SR->findBy(['private' => false]);
+        return $this->render('/administration/forum/forum.html.twig',[
+            "annonces" => $annonces,
+            "publicSubjects" => $publicSubjects,
+            "privateSubjects" => $privateSubjects]);
+    }
+    #[Route('/forum/subject', name: 'app_admin_forum_subject', methods: ['GET'])]
+    public function forumSubject(SubjectRepository $SR): Response
+    {
+        $publicSubjects = $SR->findBy(['private' => false]);
+        return $this->render('/administration/forum/subject.html.twig',[
+            "publicSubjects" => $publicSubjects
+        ]);
+    }
+
+    #[Route('/forum/private', name: 'app_admin_forum_private', methods: ['GET'])]
+    public function forumPrivate(SubjectRepository $SR): Response
+    {
+        $privateSubjects = $SR->findBy(['private' => true]);
+        return $this->render('/administration/forum/private.html.twig',[
+            "privateSubjects" => $privateSubjects
+        ]);
+    }
+
+    #[Route('/forum/annonce', name: 'app_admin_forum_annonce', methods: ['GET'])]
+    public function forumAnnonce(AnnouncementRepository $AR): Response
+    {
+        $annonces = $AR->findAll();
+        return $this->render('/administration/forum/annonce.html.twig',[
+            "annonces" => $annonces
+        ]);
+    }
+    #[Route('/forum/annonce/create', name: 'app_admin_forum_new_annonce', methods: ['GET', 'POST'])]
+    public function forumNewAnnonce(Request $request, EntityManagerInterface $em): Response
+    {
+        $annonce = new Announcement();
+        $form = $this->createForm(AnnonceFormType::class, $annonce);
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            $annonce->setCreatedAt(new \DateTimeImmutable());
+            $annonce->setUser($this->getUser());
+            $em->persist($annonce);
+            $em->flush();
+            $this->addFlash('success', 'Annonce ajoutée avec succès.');
+            return $this->redirectToRoute('app_admin_forum_annonce');
+        }
+        return $this->render('/administration/forum/new_annonce.html.twig',[
+            "form" => $form->createView()
+        ]);
+    }
     #[Route('/equipement', name: 'app_equipement', methods: ['GET'])]
     public function equipement(): Response
     {

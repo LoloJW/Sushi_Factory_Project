@@ -170,6 +170,9 @@ document.addEventListener('DOMContentLoaded', () => {
     new DataTable('#table-employes');
     new DataTable('#table-salles');
     new DataTable('#table-reservations');
+    new DataTable('#table-subjects');
+    new DataTable('#table-private');
+    new DataTable('#table-annonces');
 });
 
 
