@@ -9,7 +9,18 @@
     <div class='bg-light rounded-4 shadow-sm border border-light-subtle d-flex rounded overflow-hidden w-100 py-4 py-md-0'> 
         <div class="d-flex flex-column justify-content-center ms-5">
             <h1 class="fw-bold">Bonjour, {{app.user.firstName}} ! <i class="fa-regular fa-face-smile-beam"></i></h1><br>
-            <p class="mb-4">Bienvenue sur votre espace de gestion. <br> Vous avez 2 réunions prévues aujourd'hui. Trouvez rapidement une salle pour votre prochain point d'équipe.</p>
+            <p class="mb-4">Bienvenue sur votre espace de gestion. <br> 
+            {% if  reservations | length == 1 %}
+                Vous avez {{reservations | length}} réunion prévue aujourd'hui.
+            {% elseif reservations | length > 1 %}
+                Vous avez {{reservations | length}} réunions prévues aujourd'hui.
+            {% else %}
+                Vous n'avez aucune réunion aujourd'hui.
+            {% endif %}
+            
+                Trouvez rapidement une salle pour votre prochain point d'équipe.
+
+            </p>
             <a href="{{path('app_reserve')}}" class="btn btn-warning text-center fw-bold align-content-center btn_reserver_welcome"><i class="fa-regular fa-calendar"></i> Réserver une salle</a>
         </div>
         <div class="box_welcome_img bg-danger d-flex justify-content-end d-none d-md-block">
@@ -29,17 +40,28 @@
                 </div>
 
                 {# Chaques  réservations #}
-
-                <div class="reserve_welcome_page">
-                    <div class="ms-2 h-75 bg-light px-3 pt-2 text-center border border-dark-subtle">
-                        <span class="fs-6 fw-bold text-body-tertiary pt-2 h-75">AUJ</span> 
-                        <p class="py-1 fs-5 fw-bold">14:00</p>
+                {% if reservations %}
+                    {% for reservation in reservations %}
+                        <div class="reserve_welcome_page">
+                            <a class="stretched-link" href="{{path("app_forum_private_subject", {"slug": reservation.subject.slug})}}"></a>
+                            <div style="width: 6rem;" class="ms-2 h-75 bg-light px-3 pt-2 text-center border border-dark-subtle">
+                                <span class="fs-6 fw-bold text-body-tertiary pt-2 h-75">AUJ</span> 
+                                <div class="d-flex flex-column">
+                                    <p  style="text-underline-offset: 5px;" class="fs-6 fw-bold m-0 text-decoration-underline">{{reservation.timeStart | date('H:i')}}</p>
+                                    <p class="fs-6 fw-bold m-0">{{reservation.timeEnd | date('H:i')}}</p>
+                                </div>
+                            </div>
+                            <div class="ms-2 d-flex align-items-start h-75 flex-column justify-content-evenly"> {# détails #}
+                                <p class="mb-0 fw-bold">Titre : {{reservation.subject.title}}</p>
+                                <p class="mb-0 text-body-tertiary">Salle numéro {{reservation.room.roomNumber}} / {{reservation.type.value}}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="d-flex align-items-center justify-content-center h-100">
+                        <p class="text-center fw-bold fs-2">Vous n'avez aucun rendez-vous aujourd'hui.</p>
                     </div>
-                    <div class="ms-2 d-flex align-items-start h-75 flex-column justify-content-evenly"> {# détails #}
-                        <p class="mb-0 fw-bold">Titre réunion</p>
-                        <p class="mb-0 text-body-tertiary">Numéro de la salle</p>
-                    </div>
-                </div>
+                {% endif %}
 
             </div>
             <div class="col-0 col-lg-1 col-md-1 d-none d-md-block">
