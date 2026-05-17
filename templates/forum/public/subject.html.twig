@@ -2,11 +2,25 @@
 
 {% block main %}
     <div class="d-flex flex-column justify-content-center align-items-center">
-        <div class="container-fluid w-75">
+        <div class="container-fluid w-md-75 w-100">
             <a href="{{path('app_forum_public')}}" class="btn btn-primary"><i class="fa-solid fa-arrow-left"></i> Retour</a>
             <div class="card mt-3 p-4 shadow">
                 <h1 class="ms-5">{{subject.title}}</h1>
-                <span>{{subject.posts|length}} <i class="fa-regular fa-message"></i></span>
+                <div class="d-flex align-items-center">
+                    <form action="{{path('app_forum_subject_likes',{"slug": subject.slug})}}" method="POST" style="z-index: 2">
+                        <button type="submit" class="btn-like position-relative btn">
+                            <input type="hidden" name="_token" value="{{csrf_token('like_subject')}}">
+                            {% if subject.isLiked(app.user) %}
+                                <i class="fa-regular fa-thumbs-up text-success"></i>
+                                <span class="text-success">{{subject.likesCount}}</span>
+                            {% else %}
+                                <i class="fa-regular fa-thumbs-up"></i>
+                                <span>{{subject.likesCount}}</span>
+                            {% endif %}
+                        </button>
+                    </form>
+                    <span><i class="fa-regular fa-message"></i> {{subject.posts|length}}</span>
+                </div>
                 <span>Crée le {{subject.createdAt|date("d/m/Y à H:i")}}</span>
                 <hr>
                 {% for post in subject.posts %}
@@ -15,13 +29,28 @@
                     <div class="mb-3">
                         <div class="d-flex">
                             <div class="mx-2"><img src=
-                            {% if post.user.imgProfile %}"{{asset("images/avatars/"~post.user.imgProfile)}}"
-                            {% else %}"{{asset("images/avatar.png")}}"{% endif %}
+                            {% if post.user.imgProfile %}
+                            "{{asset("images/avatars/"~post.user.imgProfile)}}"
+                            {% else %}
+                            "{{asset("images/avatar.png")}}"
+                            {% endif %}
                              class="border border-dark avatar object-fit-cover"alt=""></div>
                             <div class="w-100">
-                                <div>
-                                    <span class="">{{post.user.firstname}} {{post.user.lastname}}</span> 
-                                    <span class="">Le {{post.createdAt|date("d/m/Y à H:i")}}</span>
+                                <div class="d-flex justify-content-start align-items-center">
+                                    <span class="post_detail">{{post.user.firstname}} {{post.user.lastname}}</span> 
+                                    <span class="post_detail">Le {{post.createdAt|date("d/m/Y à H:i")}}</span>
+                                    <form action="{{path('app_forum_post_likes',{"id": post.id})}}" method="POST" style="z-index: 2">
+                                        <button type="submit" class="btn-like position-relative btn">
+                                            <input type="hidden" name="_token" value="{{csrf_token('like_post')}}">
+                                            {% if post.isLiked(app.user) %}
+                                                <i class="fa-regular fa-thumbs-up text-success"></i>
+                                                <span class="text-success">{{post.likesCount}}</span>
+                                            {% else %}
+                                                <i class="fa-regular fa-thumbs-up"></i>
+                                                <span>{{post.likesCount}}</span>
+                                            {% endif %}
+                                        </button>
+                                    </form>
                                 </div>
                                 <div class="w-100">
                                     <p class="shadow-sm bg-light border border-secondary rounded-3 w-75 text-break p-2">
@@ -30,15 +59,26 @@
                                 </div>
                             </div>
                         </div>
-            
                     </div>
                     {% else %}
                     <div class="d-flex justify-content-end">
                         <div class="w-100">
-                            <div class="d-flex justify-content-end gap-2">
-                                <span class="">Le {{post.createdAt|date("d/m/Y à H:i")}}</span>
-                                <span class="">{{post.user.firstname}} {{post.user.lastname}}</span>
-                            </div>
+                                <div class="d-flex justify-content-end align-items-center">
+                                    <form action="{{path('app_forum_post_likes',{"id": post.id})}}" method="POST" style="z-index: 2">
+                                        <button type="submit" class="btn-like position-relative btn">
+                                            <input type="hidden" name="_token" value="{{csrf_token('like_post')}}">
+                                            {% if post.isLiked(app.user) %}
+                                                <i class="fa-regular fa-thumbs-up text-success"></i>
+                                                <span class="text-success">{{post.likesCount}}</span>
+                                            {% else %}
+                                                <i class="fa-regular fa-thumbs-up"></i>
+                                                <span>{{post.likesCount}}</span>
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                    <span class="post_detail">{{post.user.firstname}} {{post.user.lastname}}</span> 
+                                    <span class="post_detail">Le {{post.createdAt|date("d/m/Y à H:i")}}</span>
+                                </div>
                             <div class="d-flex justify-content-end w-100">
                                 <p class="shadow-sm bg-primary text-white border border-success text-break w-75 rounded-3 p-2">
                                     {{post.content}}

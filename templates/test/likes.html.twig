@@ -1,0 +1,50 @@
+{% extends 'base/website.html.twig' %}
+
+{% block main %}
+<div style="padding: 2rem; font-family: monospace;">
+    <h1>Test des méthodes de l'entité Announcement</h1>
+    
+    {% for annonce in annonces %}
+        <div style="border: 2px solid #ccc; padding: 1rem; margin: 1rem 0;">
+            <h2>Annonce #{{ annonce.id }}</h2>
+            
+            <h3>📦 Méthode AUTO-GÉNÉRÉE par make:entity</h3>
+            <p>
+                <code>annonce.title</code> → 
+                <strong>{{ annonce.title }}</strong>
+            </p>
+            <p style="color: gray;">
+                Cette méthode existe parce que tu as déclaré la propriété 
+                <code>$title</code> et que make:entity a généré 
+                <code>getTitle()</code> automatiquement.
+            </p>
+            
+            <hr>
+            
+            <h3>✨ Méthode HELPER ajoutée manuellement</h3>
+            <p>
+                <code>annonce.likesCount</code> → 
+                <strong>{{ annonce.likesCount }} like(s)</strong>
+            </p>
+            <p style="color: gray;">
+                Cette méthode n'existait pas. Tu l'as ajoutée à la main 
+                dans Announcement.php. Elle compte combien d'objets sont 
+                dans la collection <code>$userLikes</code>.
+            </p>
+            
+            <hr>
+            
+            <h3>🔍 Donnée BRUTE (la collection, sans helper)</h3>
+            <p>
+                <code>annonce.userLikes|length</code> → 
+                <strong>{{ annonce.userLikes|length }}</strong>
+            </p>
+            <p style="color: gray;">
+                Même résultat que likesCount, mais on accède directement 
+                à la collection. Pas terrible si tu dois faire 
+                ça dans 10 templates différents.
+            </p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

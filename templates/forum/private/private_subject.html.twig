@@ -2,33 +2,70 @@
 
 {% block main %}
     <div class="d-flex flex-column justify-content-center align-items-center">
-        <div class="container-fluid w-75">
-            <a href="{{path('app_forum_public')}}" class="btn btn-primary"><i class="fa-solid fa-arrow-left"></i> Retour</a>
+        <div class="container-fluid w-100 w-md-75">
+            <a href="{{path('app_forum_private')}}" class="btn btn-primary"><i class="fa-solid fa-arrow-left"></i> Retour</a>
             <div class="card mt-3 p-4 shadow">
 
             <div>
-            <span>Invités :</span>
-                {% for user in userInvites %}
-                    <div>{{user.firstname}} {{user.lastname}}</div>
-                {% endfor %}
+            <div class="card bg-light p-3">
+                <div>Invités :</div>
+                        <div class="container">
+                            <div class="row">
+                                {% for user in userInvites %}
+                                            <div class="col-12 col-md-6 col-lg-4">
+                                                <div class="d-flex justify-content-start align-items-center my-1">
+                                                    <span class="avatar_box_mini"><img src="{{asset("images/avatars/"~user.imgProfile)}}" alt="" class="avatar_mini"></span>
+                                                    <span class="">{{user.firstname}} {{user.lastname}}</span>
+                                                </div>
+                                            </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                </div>
             </div>
-                <h1 class="ms-5">{{subject.title}}</h1>
-                <span>{{subject.posts|length}} <i class="fa-regular fa-message"></i></span>
+                <h1 class="ms-5 mt-4">{{subject.title}}</h1>
+                <div class="d-flex align-items-center">
+                    <form action="{{path('app_forum_subject_likes',{"slug": subject.slug})}}" method="POST" style="z-index: 2" data-id="1">
+                        <button type="submit" class="btn-like position-relative btn">
+                            <input type="hidden" name="_token" value="{{csrf_token('like_subject')}}">
+                            {% if subject.isLiked(app.user) %}
+                                <i class="fa-regular fa-thumbs-up text-success"></i>
+                                <span class="text-success">{{subject.likesCount}}</span>
+                            {% else %}
+                                <i class="fa-regular fa-thumbs-up"></i>
+                                <span>{{subject.likesCount}}</span>
+                            {% endif %}
+                        </button>
+                    </form>
+                    <span>{{subject.posts|length}} <i class="fa-regular fa-message"></i></span>
+                </div>
                 <span>Crée le {{subject.createdAt|date("d/m/Y à H:i")}} par {{subject.user.firstname}} {{subject.user.lastname}}</span>
-                <hr>
+                <hr class="mb-3">
                 {% for post in subject.posts %}
                 <div class="">
                     {% if app.user != post.user %}
-                    <div class="mb-3">
+                    <div class="mb-2">
                         <div class="d-flex">
-                            <div class="mx-2"><img src=
+                            <div class="mx-2 d-flex justify-content-center align-items-center"><img src=
                             {% if post.user.imgProfile %}"{{asset("images/avatars/"~post.user.imgProfile)}}"
                             {% else %}"{{asset("images/avatar.png")}}"{% endif %}
                              class="border border-dark avatar object-fit-cover"alt=""></div>
                             <div class="w-100">
-                                <div>
-                                    <span class="">{{post.user.firstname}} {{post.user.lastname}}</span> 
-                                    <span class="">Le {{post.createdAt|date("d/m/Y à H:i")}}</span>
+                                <div class="d-flex justify-content-start align-items-center">
+                                    <span class="post_detail">{{post.user.firstname}} {{post.user.lastname}}</span> 
+                                    <span class="post_detail">Le {{post.createdAt|date("d/m/Y à H:i")}}</span>
+                                    <form action="{{path('app_forum_post_likes',{"id": post.id})}}" method="POST" style="z-index: 2">
+                                        <button type="submit" class="btn-like position-relative btn">
+                                            <input type="hidden" name="_token" value="{{csrf_token('like_post')}}">
+                                            {% if post.isLiked(app.user) %}
+                                                <i class="fa-regular fa-thumbs-up text-success"></i>
+                                                <span class="text-success">{{post.likesCount}}</span>
+                                            {% else %}
+                                                <i class="fa-regular fa-thumbs-up"></i>
+                                                <span>{{post.likesCount}}</span>
+                                            {% endif %}
+                                        </button>
+                                    </form>
                                 </div>
                                 <div class="w-100">
                                     <p class="shadow-sm bg-light border border-secondary rounded-3 w-75 text-break p-2">
@@ -40,11 +77,23 @@
             
                     </div>
                     {% else %}
-                    <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-end mb-2">
                         <div class="w-100">
-                            <div class="d-flex justify-content-end gap-2">
-                                <span class="">Le {{post.createdAt|date("d/m/Y à H:i")}}</span>
-                                <span class="">{{post.user.firstname}} {{post.user.lastname}}</span>
+                            <div class="d-flex justify-content-end gap-2 align-items-center">
+                                    <form action="{{path('app_forum_post_likes',{"id": post.id})}}" method="POST" style="z-index: 2">
+                                        <button type="submit" class="btn-like position-relative btn">
+                                            <input type="hidden" name="_token" value="{{csrf_token('like_post')}}">
+                                            {% if post.isLiked(app.user) %}
+                                                <i class="fa-regular fa-thumbs-up text-success"></i>
+                                                <span class="text-success">{{post.likesCount}}</span>
+                                            {% else %}
+                                                <i class="fa-regular fa-thumbs-up"></i>
+                                                <span>{{post.likesCount}}</span>
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                <span class="post_detail">Le {{post.createdAt|date("d/m/Y à H:i")}}</span>
+                                <span class="post_detail">{{post.user.firstname}} {{post.user.lastname}}</span>
                             </div>
                             <div class="d-flex justify-content-end w-100">
                                 <p class="shadow-sm bg-primary text-white border border-success text-break w-75 rounded-3 p-2">
@@ -52,11 +101,11 @@
                                 </p>
                             </div>
                         </div>
-                        <div class="mx-2">
+                        <div class="mx-2 d-flex justify-content-center align-items-center">
                             <img src=
                             {% if post.user.imgProfile %}"{{asset("images/avatars/"~post.user.imgProfile)}}"
                             {% else %}"{{asset("images/avatar.png")}}"{% endif %}
-                            class="border border-success avatar object-fit-cover"alt="">
+                            class="border border-success avatar object-fit-cover"alt="avatar_{{post.user.firstName}}">
                         </div>
                     </div>
                     {% endif %}
@@ -65,7 +114,7 @@
                 {% for message in app.flashes("error") %}
                     <span class="text-danger">{{message}}</span>
                 {% endfor %}
-                <form action="{{path('app_forum_public_subject',{"slug": subject.slug})}}" method="POST">
+                <form action="{{path('app_forum_private_subject',{"slug": subject.slug})}}" method="POST">
                     <label for="post">Nouveau message :</label>
                     <input type="hidden" name="_token" value="{{csrf_token("new_post")}}">
                     <textarea name="_post" id="post" class="form-control" rows="3"></textarea>

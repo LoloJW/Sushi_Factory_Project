@@ -315,10 +315,11 @@ width: 16px !important;
 }
 
 .img_profile {
-  height: 40px;
-  width: 40px;
+  height: 45px;
+  width: 45px;
   border-radius: 50%;
   background-color: #ffffff;
+  border: solid $pikachu;
 }
 
 // ============================================================
@@ -365,6 +366,15 @@ width: 16px !important;
 .description_annonce_welcome_page {
   font-weight: 600;
   color: white;
+
+
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
 }
 
 // ============================================================
@@ -456,6 +466,9 @@ tr:hover:not(.first_line) td:hover {
   background-color: #fdfdfd;
   box-shadow: 0px 0px 5px 0px #e0e0e0;
 }
+.post_detail {
+  font-size: 10px;
+}
 
 .box_form {
   height: 100%;
@@ -498,8 +511,8 @@ tr:hover:not(.first_line) td:hover {
 // ============================================================
 
 .avatar_box {
-  height: 100px;
-  width: 100px;
+  height: 94px;
+  width: 94px;
   border-radius: 50%;
   background-color: #ffffff;
   border: solid $primary;
@@ -514,6 +527,26 @@ tr:hover:not(.first_line) td:hover {
   border-radius: 50%;
   background-color: #ffffff;
   object-fit: cover;
+    flex-shrink: 0;
+}
+.avatar_box_mini {
+  height: 36px;
+  width: 36px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: solid $primary;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.avatar_mini {
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  object-fit: cover;
+    flex-shrink: 0;
 }
 .edit_btn_profile {
   height: 28px;
@@ -714,6 +747,14 @@ footer {
   .character_size {
     font-size: 12px;
   }
+  .nav_forum {
+    font-size: 14px;
+    gap: 5px;
+  }
+  .active {
+  border-bottom: $primary solid 2px;
+  font-size: 16px;
+}
   .navbar-brand {
     font-size: 16px;
   }

@@ -138,4 +138,21 @@ class Announcement
 
         return $this;
     }
+    public function getLikesCount():int
+    {
+        return $this->userLikes->count();
+    }
+    public function isLiked(?User $user):bool
+    {
+        if (!$user) {
+            return false;
+        }
+        $userLikes = $this->userLikes;
+        foreach ($userLikes as $userLike) {
+            if ($userLike->getUser() === $user) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

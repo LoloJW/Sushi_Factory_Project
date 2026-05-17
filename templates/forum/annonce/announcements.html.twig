@@ -1,0 +1,40 @@
+{% extends 'base/website.html.twig' %}
+
+{% block main %}
+    {% include "forum/nav_forum.html.twig" %}
+
+        <div class="row g-3 m-0">
+            {% for annonce in annonces %}
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="box_subject rounded-4 p-4 position-relative">
+                        <div class="d-flex flex-column justify-content-between h-100">
+                            <div><span class="f_annonce">Annonce</span> <span class="time_message">• Crée le {{annonce.createdAt|date("d/m/Y")}}</span></div>
+                            <a href="{{path("app_forum_annonces_subject",{"slug": annonce.slug})}}" class="stretched-link"></a>
+                            {# Lien vers la page du sujet, s'étend sur l'ensemble de la div #}
+                            {# Le lien même invisible influ sur le justify-content-between, ça crée un petit margin à son emplacement  #}
+                            <div class="h-50">
+                                <h3 class="fw-bold fs-5 mb-3">{{annonce.title}}</h3>
+                                <p class="text-truncate">{{ annonce.content }}</p>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>{{annonce.user.firstname}} {{annonce.user.lastname}}</span>
+                                <form action="{{path('app_forum_announcements_likes',{"slug": annonce.slug})}}" method="POST" style="z-index: 2" data-id="1"> 
+                                    <button type="submit" class="btn-like position-relative btn">
+                                        <input type="hidden" name="_token" value="{{csrf_token('like_announcement')}}">
+                                        {% if annonce.isLiked(app.user) %}
+                                            <i class="fa-regular fa-thumbs-up text-success"></i>
+                                            <span class="text-success">{{annonce.likesCount}}</span>
+                                        {% else %}
+                                            <i class="fa-regular fa-thumbs-up"></i>
+                                            <span>{{annonce.likesCount}}</span>
+                                        {% endif %}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+{% endblock %}

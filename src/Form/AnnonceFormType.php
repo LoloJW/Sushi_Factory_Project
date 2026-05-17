@@ -15,7 +15,9 @@ class AnnonceFormType extends AbstractType
     {
         $builder
             ->add('title', TextType::class)
-            ->add('content' , TextareaType::class)
+            ->add('content' , TextareaType::class,[
+                'attr' => ['rows' => 6],
+            ])
         ;
     }
 

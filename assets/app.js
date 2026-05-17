@@ -21,6 +21,7 @@ if (VueContainer) {
     app.mount('#vue-app');
 }
 
+//Ancien bouton pour upgrade les likes.
 document.querySelectorAll('.btn-like').forEach(button => {
     button.addEventListener('click', (event) => {
         event.stopPropagation();
