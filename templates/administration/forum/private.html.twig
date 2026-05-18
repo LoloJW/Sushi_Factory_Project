@@ -9,6 +9,12 @@
                 <p class="text-muted small mb-0">Vue d'ensemble et modifications</p>
             </div>
         </div>
+        {% for message in app.flashes("success") %}
+          <span class="text-success fw-semibold">{{message}}</span>  
+        {% endfor %}
+        {% for message in app.flashes("error") %}
+          <span class="text-danger fw-semibold">{{message}}</span>  
+        {% endfor %}
         <table id="table-private" class="table" style="cursor:default">
             <thead>
                 <tr>
@@ -26,7 +32,19 @@
                         <td>{{ subject.user.firstName }} {{ subject.user.lastName }}</td>
                         <td>{{ subject.reservation.reservedFor|date('d/m/Y') }} de {{ subject.reservation.timeStart|date('H:i') }} à {{ subject.reservation.timeEnd|date('H:i') }}</td>
                         <td>{{ subject.createdAt|date('d/m/Y') }}</td>
-                        <td></td>
+                        <td style="cursor:default" class="text-center">
+                            <div class="my-1">
+                                <a href="{{path("app_admin_forum_subject_edit",{"slug":subject.slug})}}" class="admin_action text-center">
+                                    <i class="fa-regular fa-pen-to-square text-secondary"></i>
+                                </a>
+                            </div>
+                            <form class="my-1" action="{{path("app_admin_forum_subject_delete",{"slug":subject.slug})}}" method="POST">
+                                <input type="hidden" name="_token" value="{{csrf_token('delete'~subject.slug)}}">
+                                <button type="submit" class="admin_action admin_delete_btn btn btn-link p-0">
+                                    <i class="fa-regular fa-trash-can text-danger"></i>
+                                </button>
+                            </form>
+                        </td>
                             
                     </tr>
                 {% endfor %}

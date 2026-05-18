@@ -1,0 +1,146 @@
+{% extends "base/admin.html.twig" %}
+{% block main %}
+    <div class="d-flex flex-column justify-content-center align-items-center">
+        <div class="card bg-light p-3">
+        {% for message in app.flashes("error") %}
+                <span class="text-danger">{{message}}</span>
+        {% endfor %}
+        {% for message in app.flashes("success") %}
+                <span class="text-success">{{message}}</span>
+        {% endfor %}
+        <div>Invités :</div>
+        <div class="container">
+            <div class="row">
+            {% if subject.reservation %}
+                {% for user in subject.reservation.userInvites %}
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="d-flex justify-content-start align-items-center my-1">
+                                    <span class="avatar_box_mini"><img src="{{asset("images/avatars/"~user.imgProfile)}}" alt="" class="avatar_mini"></span>
+                                    <span class="">{{user.firstname}} {{user.lastname}}</span>
+                                </div>
+                            </div>
+                {% endfor %}
+            {% endif %}
+            </div>
+        </div>
+        <div class="container-fluid w-md-75 w-100">
+            <a href="{{path('app_forum')}}" class="btn btn-primary"><i class="fa-solid fa-arrow-left"></i> Retour</a>
+            <div class="card mt-3 p-4 shadow">
+                <h1 class="ms-5">{{subject.title}}</h1>
+                <div class="d-flex align-items-center">
+                    <form action="{{path('app_forum_subject_likes',{"slug": subject.slug})}}" method="POST" style="z-index: 2">
+                        <button type="submit" class="btn-like position-relative btn">
+                            <input type="hidden" name="_token" value="{{csrf_token('like_subject')}}">
+                            {% if subject.isLiked(app.user) %}
+                                <i class="fa-regular fa-thumbs-up text-success"></i>
+                                <span class="text-success">{{subject.likesCount}}</span>
+                            {% else %}
+                                <i class="fa-regular fa-thumbs-up"></i>
+                                <span>{{subject.likesCount}}</span>
+                            {% endif %}
+                        </button>
+                    </form>
+                    <span><i class="fa-regular fa-message"></i> {{subject.posts|length}}</span>
+                </div>
+                <span>Crée le {{subject.createdAt|date("d/m/Y à H:i")}}</span>
+                <hr>
+                {% for post in subject.posts %}
+                <div class="">
+                    {% if app.user != post.user %}
+                    <div class="mb-3">
+                        <div class="d-flex">
+                            <div class="mx-2"><img src=
+                            {% if post.user.imgProfile %}
+                            "{{asset("images/avatars/"~post.user.imgProfile)}}"
+                            {% else %}
+                            "{{asset("images/avatar.png")}}"
+                            {% endif %}
+                             class="border border-dark avatar object-fit-cover"alt=""></div>
+                            <div class="w-100">
+                                <div class="d-flex justify-content-start align-items-center">
+                                    <span class="post_detail">{{post.user.firstname}} {{post.user.lastname}}</span> 
+                                    <span class="post_detail">Le {{post.createdAt|date("d/m/Y à H:i")}}</span>
+                                    <form action="{{path('app_forum_post_likes',{"id": post.id})}}" method="POST" style="z-index: 2">
+                                        <button type="submit" class="btn-like position-relative btn">
+                                            <input type="hidden" name="_token" value="{{csrf_token('like_post')}}">
+                                            {% if post.isLiked(app.user) %}
+                                                <i class="fa-regular fa-thumbs-up text-success"></i>
+                                                <span class="text-success">{{post.likesCount}}</span>
+                                            {% else %}
+                                                <i class="fa-regular fa-thumbs-up"></i>
+                                                <span>{{post.likesCount}}</span>
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                </div>
+                                <div class="w-100 d-flex align-items-center">
+                                    <p class="shadow-sm bg-light border border-secondary rounded-3 w-75 text-break p-2">
+                                        {{post.content}}
+                                    </p>
+                                    <div class="mb-2 ms-1">
+                                        <form class="my-1" action="{{path("app_admin_forum_post_delete",{"id":post.id})}}" method="POST">
+                                            <input type="hidden" name="_token" value="{{csrf_token('delete'~post.id)}}">
+                                            <button type="submit" class="admin_action admin_delete_btn btn btn-link p-0">
+                                                <i class="fa-regular fa-trash-can text-danger"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="d-flex justify-content-end">
+                        <div class="w-100">
+                                <div class="d-flex justify-content-end align-items-center">
+                                    <form action="{{path('app_forum_post_likes',{"id": post.id})}}" method="POST" style="z-index: 2">
+                                        <button type="submit" class="btn-like position-relative btn">
+                                            <input type="hidden" name="_token" value="{{csrf_token('like_post')}}">
+                                            {% if post.isLiked(app.user) %}
+                                                <i class="fa-regular fa-thumbs-up text-success"></i>
+                                                <span class="text-success">{{post.likesCount}}</span>
+                                            {% else %}
+                                                <i class="fa-regular fa-thumbs-up"></i>
+                                                <span>{{post.likesCount}}</span>
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                    <span class="post_detail">{{post.user.firstname}} {{post.user.lastname}}</span> 
+                                    <span class="post_detail">Le {{post.createdAt|date("d/m/Y à H:i")}}</span>
+                                </div>
+                            <div class="d-flex justify-content-end w-100">
+                                <div class="mb-2 me-1">
+                                    <form class="my-1" action="{{path("app_admin_forum_post_delete",{"id":post.id})}}" method="POST">
+                                        <input type="hidden" name="_token" value="{{csrf_token('delete'~post.id)}}">
+                                        <button type="submit" class="admin_action admin_delete_btn btn btn-link p-0">
+                                            <i class="fa-regular fa-trash-can text-danger"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                <p class="shadow-sm bg-primary text-white border border-success text-break w-75 rounded-3 p-2">
+                                    {{post.content}}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mx-2">
+                            <img src=
+                            {% if post.user.imgProfile %}"{{asset("images/avatars/"~post.user.imgProfile)}}"
+                            {% else %}"{{asset("images/avatar.png")}}"{% endif %}
+                            class="border border-success avatar object-fit-cover"alt="">
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                <form action="{{path('app_forum_public_subject',{"slug": subject.slug})}}" method="POST">
+                    <label for="post">Nouveau message :</label>
+                    <input type="hidden" name="_token" value="{{csrf_token("new_post")}}">
+                    <textarea name="_post" id="post" class="form-control" rows="3"></textarea>
+                    <button type="submit" class="btn btn-success mt-3">Envoyer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

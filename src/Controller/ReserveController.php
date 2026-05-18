@@ -83,7 +83,7 @@ final class ReserveController extends AbstractController
         $room = $RR->find($data['roomId']);
 
         $timeStart = new \DateTime($data['timeStart']);
-        $minStart = new \DateTime("9:00");
+        $minStart = new \DateTime("8:00");
 
         $timeEnd = new \DateTime($data['timeEnd']);
         $maxEnd = new \DateTime("23:00");

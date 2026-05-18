@@ -15,6 +15,9 @@
         {% for message in app.flashes("success") %}
           <span class="text-success fw-semibold">{{message}}</span>  
         {% endfor %}
+        {% for message in app.flashes("error") %}
+          <span class="text-danger fw-semibold">{{message}}</span>  
+        {% endfor %}
         <table id="table-annonces" class="table" style="cursor:default">
             <thead>
                 <tr>
@@ -30,7 +33,19 @@
                         <td>{{ annonce.title }}</td>
                         <td>{{ annonce.user.firstName }} {{ annonce.user.lastName }}</td>
                         <td>{{ annonce.createdAt|date('d/m/Y') }}</td>
-                        <td></td>
+                        <td style="cursor:default" class="text-center">
+                            <div class="my-1">
+                                <a href="{{path("app_admin_forum_annonce_edit",{"id":annonce.id})}}" class="admin_action text-center">
+                                    <i class="fa-regular fa-pen-to-square text-secondary"></i>
+                                </a>
+                            </div>
+                            <form class="my-1" action="{{path("app_admin_forum_annonce_delete",{"id":annonce.id})}}" method="POST">
+                                <input type="hidden" name="_token" value="{{csrf_token('delete'~annonce.id)}}">
+                                <button type="submit" class="admin_action admin_delete_btn btn btn-link p-0">
+                                    <i class="fa-regular fa-trash-can text-danger"></i>
+                                </button>
+                            </form>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>

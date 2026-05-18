@@ -8,6 +8,7 @@ use App\Form\Admin\EmployeFormType;
 use App\Form\AnnonceFormType;
 use App\Form\CreateRoomFormType;
 use App\Repository\AnnouncementRepository;
+use App\Repository\PostRepository;
 use App\Repository\ReservationRoomRepository;
 use App\Repository\RoomsRepository;
 use App\Repository\SubjectRepository;
@@ -193,9 +194,44 @@ final class AdministrationController extends AbstractController
     #[Route('/forum/subject', name: 'app_admin_forum_subject', methods: ['GET'])]
     public function forumSubject(SubjectRepository $SR): Response
     {
-        $publicSubjects = $SR->findBy(['private' => false]);
+        $publicSubjects = $SR->findBy(['private' => false], ['createdAt' => 'DESC']);
         return $this->render('/administration/forum/subject.html.twig',[
             "publicSubjects" => $publicSubjects
+        ]);
+    }
+    #[Route('/forum/subject/delete/{slug}', name: 'app_admin_forum_subject_delete', methods: ['POST'])]
+    public function forumSubjectDelete(string $slug, SubjectRepository $SR, EntityManagerInterface $em, Request $request): Response
+    {
+        $subject = $SR->findOneBy(['slug' => $slug]);
+        if (!$subject) {
+            $this->addFlash('error', 'Ce sujet n\'existe pas.');
+            return $this->redirectToRoute('app_admin_forum_subject');
+        }
+        if (!$this->isCsrfTokenValid("delete".$slug, $request->request->get("_token"))) {
+            $this->addFlash('error', 'Une erreur est survenue.');
+            return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('app_admin_forum_subject'));
+        }
+        $em->remove($subject);
+        $em->flush();
+        $this->addFlash('success', 'Sujet supprimée avec succès.');
+        return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('app_admin_forum_subject'));
+    }
+
+    #[Route('/forum/subject/edit/{slug}', name: 'app_admin_forum_subject_edit', methods: ['GET', 'POST'])]
+    public function forumSubjectEdit(
+    string $slug,
+    SubjectRepository $SR, 
+    Request $request, 
+    EntityManagerInterface $em
+    ): Response
+    {
+        $subject = $SR->findOneBy(['slug' => $slug]);
+        if (!$subject) {
+            $this->addFlash('error', 'Ce sujet n\'existe pas.');
+            return $this->redirectToRoute('app_admin_forum_subject');
+        }
+        return $this->render('/administration/forum/subject.edit.html.twig',[
+            "subject" => $subject
         ]);
     }
 
@@ -215,6 +251,71 @@ final class AdministrationController extends AbstractController
         return $this->render('/administration/forum/annonce.html.twig',[
             "annonces" => $annonces
         ]);
+    }
+    #[Route('/forum/annonce/edit/{id}', name: 'app_admin_forum_annonce_edit', methods: ['GET', 'POST'])]
+    public function forumAnnonceEdit(int $id,AnnouncementRepository $AR, Request $request, EntityManagerInterface $em): Response
+    {
+
+        $annonce = $AR->find($id);
+
+        if (!$annonce) {
+            $this->addFlash('error', 'Cette annonce n\'existe pas.');
+            return $this->redirectToRoute('app_admin_forum_annonce');
+        }
+
+        $form = $this->createForm(AnnonceFormType::class, $annonce);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($annonce);
+            $em->flush();
+            $this->addFlash('success', 'Annonce modifiée avec succès.');
+            return $this->redirectToRoute('app_admin_forum_annonce');
+        }
+
+        return $this->render('/administration/forum/new_annonce.html.twig',[
+            "form" => $form->createView()
+        ]);
+    }
+    #[Route('/forum/annonce/delete/{id}', name: 'app_admin_forum_annonce_delete', methods: ['POST'])]
+    public function forumAnnonceDelete(int $id,AnnouncementRepository $AR, Request $request, EntityManagerInterface $em): Response
+    {
+
+        $annonce = $AR->find($id);
+        if (!$annonce) {
+            $this->addFlash('error', 'Cette annonce n\'existe pas.');
+            return $this->redirectToRoute('app_admin_forum_annonce');
+            }
+            
+            if (!$this->isCsrfTokenValid("delete".$id, $request->request->get("_token"))) {
+                $this->addFlash('error', 'Une erreur est survenue.');
+                return $this->redirectToRoute('app_admin_forum_annonce');
+                }
+                $em->remove($annonce);
+                $em->flush();
+
+                $this->addFlash('success', 'Annonce supprimée avec succès.');
+        return $this->redirectToRoute('app_admin_forum_annonce');
+    }
+    #[Route('/forum/post/delete/{id}', name: 'app_admin_forum_post_delete', methods: ['POST'])]
+    public function forumPostDelete(int $id,PostRepository $PR, Request $request, EntityManagerInterface $em): Response
+    {
+
+        $post = $PR->find($id);
+        if (!$post) {
+            $this->addFlash('error', 'Ce poste n\'existe pas.');
+            return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('app_forum'));
+            }
+            
+            if (!$this->isCsrfTokenValid("delete".$id, $request->request->get("_token"))) {
+                $this->addFlash('error', 'Une erreur est survenue.');
+                return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('app_forum'));
+                }
+                $em->remove($post);
+                $em->flush();
+
+                $this->addFlash('success', 'Poste supprimé avec succès.');
+        return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('app_forum'));
     }
     #[Route('/forum/annonce/create', name: 'app_admin_forum_new_annonce', methods: ['GET', 'POST'])]
     public function forumNewAnnonce(Request $request, EntityManagerInterface $em): Response
