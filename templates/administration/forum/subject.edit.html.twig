@@ -42,7 +42,7 @@
                     </form>
                     <span><i class="fa-regular fa-message"></i> {{subject.posts|length}}</span>
                 </div>
-                <span>Crée le {{subject.createdAt|date("d/m/Y à H:i")}}</span>
+                <span>Crée le {{subject.createdAt|date("d/m/Y à H:i")}} par {{subject.user.firstname}} {{subject.user.lastname}}</span>
                 <hr>
                 {% for post in subject.posts %}
                 <div class="">
@@ -132,12 +132,6 @@
                     {% endif %}
                 </div>
                 {% endfor %}
-                <form action="{{path('app_forum_public_subject',{"slug": subject.slug})}}" method="POST">
-                    <label for="post">Nouveau message :</label>
-                    <input type="hidden" name="_token" value="{{csrf_token("new_post")}}">
-                    <textarea name="_post" id="post" class="form-control" rows="3"></textarea>
-                    <button type="submit" class="btn btn-success mt-3">Envoyer</button>
-                </form>
             </div>
         </div>
     </div>

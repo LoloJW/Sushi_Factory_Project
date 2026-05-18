@@ -1,0 +1,170 @@
+{% extends 'base/website.html.twig' %}
+
+{% block title %}Politique de confidentialité - SushiFactory{% endblock %}
+
+{% block main %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-12 col-lg-10 mx-auto">
+
+            <h1 class="fw-bold mb-4">Politique de confidentialité</h1>
+
+            <p class="text-muted">
+                Dernière mise à jour : {{ "now"|date("d/m/Y") }}
+            </p>
+
+            <p class="lead">
+                La présente politique a pour objet d'informer les utilisateurs de SushiFactory
+                sur la manière dont leurs données personnelles sont collectées, utilisées et
+                protégées, conformément au Règlement Général sur la Protection des Données
+                (RGPD) et à la loi française Informatique et Libertés.
+            </p>
+
+            <section class="mb-5">
+                <h2 class="fw-bold mt-4">1. Responsable du traitement</h2>
+                <p>
+                    Le responsable du traitement des données collectées sur le site est
+                    l'éditeur de SushiFactory, identifié dans les
+                    <a href="{{ path('app_welcome_mentions') }}">mentions légales</a>.
+                </p>
+                <p>
+                    Pour toute question relative à vos données personnelles, vous pouvez
+                    nous contacter à l'adresse :
+                    <a href="mailto:contact@sushifactory.fr">contact@sushifactory.fr</a>
+                </p>
+            </section>
+
+            <section class="mb-5">
+                <h2 class="fw-bold mt-4">2. Données collectées</h2>
+                <p>
+                    Dans le cadre de l'utilisation du site, nous collectons les données suivantes :
+                </p>
+                <ul>
+                    <li><strong>Données de compte :</strong> nom, prénom, adresse email, mot de passe (stocké de façon hachée et irréversible)</li>
+                    <li><strong>Image de profil :</strong> avatar uploadé volontairement par l'utilisateur</li>
+                    <li><strong>Données d'utilisation :</strong> réservations effectuées, sujets et messages créés sur le forum, likes</li>
+                    <li><strong>Données techniques :</strong> identifiant de session, cookie d'authentification</li>
+                </ul>
+            </section>
+
+            <section class="mb-5">
+                <h2 class="fw-bold mt-4">3. Finalités du traitement</h2>
+                <p>Vos données sont collectées et traitées pour les finalités suivantes :</p>
+                <ul>
+                    <li>Permettre la création et la gestion de votre compte utilisateur</li>
+                    <li>Authentifier votre identité lors de la connexion</li>
+                    <li>Permettre la réservation de salles et l'organisation de réunions</li>
+                    <li>Permettre la participation aux discussions sur le forum interne</li>
+                    <li>Assurer la sécurité du site et prévenir les usages frauduleux</li>
+                </ul>
+            </section>
+
+            <section class="mb-5">
+                <h2 class="fw-bold mt-4">4. Base légale</h2>
+                <p>
+                    Les traitements de données réalisés sur SushiFactory reposent sur les
+                    bases légales suivantes :
+                </p>
+                <ul>
+                    <li><strong>Le consentement</strong> de l'utilisateur lors de la création de son compte</li>
+                    <li><strong>L'exécution du service</strong> demandé (réservation, forum, profil)</li>
+                    <li><strong>L'intérêt légitime</strong> de l'éditeur pour assurer la sécurité du site</li>
+                </ul>
+            </section>
+
+            <section class="mb-5">
+                <h2 class="fw-bold mt-4">5. Durée de conservation</h2>
+                <p>
+                    Vos données personnelles sont conservées pendant toute la durée d'utilisation
+                    de votre compte. À la suppression du compte, les données sont effacées dans
+                    un délai maximum de 30 jours, à l'exception des données nécessaires au respect
+                    d'obligations légales.
+                </p>
+                <p>
+                    Les comptes non vérifiés (sans confirmation par email) sont automatiquement
+                    supprimés après une durée d'inactivité d'une heure suivant leur création.
+                </p>
+            </section>
+
+            <section class="mb-5">
+                <h2 class="fw-bold mt-4">6. Sécurité des données</h2>
+                <p>
+                    Les mesures techniques et organisationnelles suivantes sont mises en œuvre
+                    pour protéger vos données :
+                </p>
+                <ul>
+                    <li>Hachage irréversible des mots de passe (algorithme bcrypt)</li>
+                    <li>Protection contre les attaques CSRF (Cross-Site Request Forgery)</li>
+                    <li>Limitation du nombre de tentatives de connexion (rate limiting)</li>
+                    <li>Vérification d'identité par email lors de l'inscription</li>
+                    <li>Communication chiffrée via HTTPS</li>
+                    <li>Sauvegardes régulières par l'hébergeur</li>
+                </ul>
+            </section>
+
+            <section class="mb-5">
+                <h2 class="fw-bold mt-4">7. Partage des données</h2>
+                <p>
+                    Vos données ne sont <strong>jamais vendues, louées ou cédées</strong> à
+                    des tiers à des fins commerciales. Elles ne sont accessibles qu'aux personnes
+                    suivantes :
+                </p>
+                <ul>
+                    <li>Vous-même via votre espace utilisateur</li>
+                    <li>Les administrateurs du site, dans la limite stricte de leurs fonctions</li>
+                    <li>Les autres utilisateurs autorisés, pour les données rendues publiques (nom, prénom, avatar, contenu du forum)</li>
+                </ul>
+            </section>
+
+            <section class="mb-5">
+                <h2 class="fw-bold mt-4">8. Cookies</h2>
+                <p>
+                    Le site utilise les cookies suivants :
+                </p>
+                <ul>
+                    <li><strong>Cookie de session (PHPSESSID) :</strong> nécessaire au fonctionnement de l'authentification. Sans ce cookie, il n'est pas possible de rester connecté.</li>
+                    <li><strong>Cookie "Se souvenir de moi" (REMEMBERME) :</strong> permet de maintenir votre session ouverte pendant 7 jours, uniquement si vous cochez l'option lors de la connexion.</li>
+                </ul>
+                <p>
+                    Aucun cookie de mesure d'audience, de publicité ou de traçage n'est utilisé.
+                </p>
+            </section>
+
+            <section class="mb-5">
+                <h2 class="fw-bold mt-4">9. Vos droits</h2>
+                <p>
+                    Conformément au RGPD, vous disposez des droits suivants sur vos données :
+                </p>
+                <ul>
+                    <li><strong>Droit d'accès :</strong> obtenir une copie des données que nous détenons sur vous</li>
+                    <li><strong>Droit de rectification :</strong> corriger des données inexactes via votre profil</li>
+                    <li><strong>Droit à l'effacement :</strong> demander la suppression de votre compte et de vos données</li>
+                    <li><strong>Droit à la limitation :</strong> demander la suspension du traitement de vos données</li>
+                    <li><strong>Droit d'opposition :</strong> vous opposer au traitement de vos données pour un motif légitime</li>
+                    <li><strong>Droit à la portabilité :</strong> recevoir vos données dans un format structuré et lisible</li>
+                </ul>
+                <p>
+                    Pour exercer ces droits, contactez-nous à
+                    <a href="mailto:contact@sushifactory.fr">contact@sushifactory.fr</a>.
+                    Une réponse vous sera apportée dans un délai maximum d'un mois.
+                </p>
+                <p>
+                    Vous disposez également du droit d'introduire une réclamation auprès de
+                    la <strong>CNIL</strong> (Commission Nationale de l'Informatique et des Libertés) :
+                    <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer">www.cnil.fr</a>.
+                </p>
+            </section>
+
+            <section class="mb-5">
+                <h2 class="fw-bold mt-4">10. Modification de la politique</h2>
+                <p>
+                    La présente politique peut être modifiée à tout moment pour refléter
+                    les évolutions du site ou de la réglementation applicable. Toute modification
+                    fera l'objet d'une mise à jour de la date en tête de page.
+                </p>
+            </section>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

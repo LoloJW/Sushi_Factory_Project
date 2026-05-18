@@ -1,0 +1,106 @@
+{% extends 'base/website.html.twig' %}
+
+{% block title %}Mentions légales - SushiFactory{% endblock %}
+
+{% block main %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-12 col-lg-10 mx-auto">
+
+            <h1 class="fw-bold mb-4">Mentions légales</h1>
+
+            <p class="text-muted">
+                Dernière mise à jour : {{ "now"|date("d/m/Y") }}
+            </p>
+
+            <section class="mb-5">
+                <h2 class="fw-bold mt-4">1. Présentation du site</h2>
+                <p>
+                    Le présent site, accessible à l'adresse <strong>sushifactory.fr</strong>,
+                    est édité dans le cadre d'un projet pédagogique réalisé pour l'obtention
+                    du titre professionnel <strong>Développeur Web et Web Mobile (DWWM)</strong>.
+                </p>
+                <p>
+                    L'entreprise <strong>SushiFactory</strong> mentionnée sur ce site est
+                    une entité fictive utilisée à des fins de démonstration. Toute ressemblance
+                    avec une entreprise existante serait fortuite.
+                </p>
+            </section>
+
+            <section class="mb-5">
+                <h2 class="fw-bold mt-4">2. Éditeur du site</h2>
+                <ul>
+                    <li><strong>Nom du projet :</strong> SushiFactory</li>
+                    <li><strong>Nature :</strong> Projet pédagogique étudiant</li>
+                    <li><strong>Responsable de la publication :</strong> Saint-Georges Laurent</li>
+                    <li><strong>Adresse électronique :</strong> contact@sushifactory.fr</li>
+                </ul>
+            </section>
+
+            <section class="mb-5">
+                <h2 class="fw-bold mt-4">3. Hébergement</h2>
+                <p>
+                    Le site est hébergé par :
+                </p>
+                <ul>
+                    <li><strong>Hostinger International Ltd.</strong></li>
+                    <li>61 Lordou Vironos Street, 6023 Larnaca, Chypre</li>
+                    <li>Site web : <a href="https://www.hostinger.fr" target="_blank" rel="noopener noreferrer">www.hostinger.fr</a></li>
+                </ul>
+            </section>
+
+            <section class="mb-5">
+                <h2 class="fw-bold mt-4">4. Propriété intellectuelle</h2>
+                <p>
+                    L'ensemble des éléments présents sur le site (textes, images, logos, code,
+                    maquettes) est protégé par le droit d'auteur. Toute reproduction, représentation,
+                    modification ou exploitation, totale ou partielle, sans autorisation préalable
+                    et écrite de l'éditeur est interdite et susceptible de constituer une contrefaçon.
+                </p>
+                <p>
+                    Les marques tierces éventuellement citées (Symfony, Vue.js, Bootstrap, etc.)
+                    restent la propriété de leurs titulaires respectifs.
+                </p>
+            </section>
+
+            <section class="mb-5">
+                <h2 class="fw-bold mt-4">5. Limitation de responsabilité</h2>
+                <p>
+                    Le site SushiFactory étant un projet pédagogique de démonstration,
+                    aucune garantie n'est apportée quant à l'exactitude, l'exhaustivité ou
+                    la disponibilité des informations qui y figurent. L'éditeur ne pourra
+                    être tenu responsable de tout dommage direct ou indirect résultant de
+                    l'utilisation du site ou de l'impossibilité d'y accéder.
+                </p>
+            </section>
+
+            <section class="mb-5">
+                <h2 class="fw-bold mt-4">6. Liens hypertextes</h2>
+                <p>
+                    Le site peut contenir des liens vers des sites tiers. L'éditeur n'exerce
+                    aucun contrôle sur ces sites et décline toute responsabilité quant à leur
+                    contenu ou à l'utilisation qui pourrait en être faite.
+                </p>
+            </section>
+
+            <section class="mb-5">
+                <h2 class="fw-bold mt-4">7. Données personnelles</h2>
+                <p>
+                    Les modalités de collecte et de traitement des données personnelles sont
+                    détaillées dans notre
+                    <a href="{{ path('app_welcome_confidential') }}">politique de confidentialité</a>.
+                </p>
+            </section>
+
+            <section class="mb-5">
+                <h2 class="fw-bold mt-4">8. Contact</h2>
+                <p>
+                    Pour toute question relative au site ou à son fonctionnement, vous pouvez
+                    nous écrire à l'adresse : <a href="mailto:contact@sushifactory.fr">contact@sushifactory.fr</a>
+                </p>
+            </section>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

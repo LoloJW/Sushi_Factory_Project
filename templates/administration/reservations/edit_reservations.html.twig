@@ -1,0 +1,30 @@
+{% extends "base/admin.html.twig" %}
+
+{% block main %}
+<div class="bg-light">
+    <div class="container">
+        <h1 class="text-center mt-5">Modifier une réservation</h1>
+        {% for message in app.flashes("error") %}
+            <span class="text-danger my-3">{{message}}</span>
+        {% endfor %}
+        {{ form_start(form) }}
+        {{ form_row(form.type) }}
+        {{ form_row(form.reservedFor) }}
+        {{ form_row(form.timeStart) }}
+        {{ form_row(form.timeEnd) }}
+        {{ form_row(form.name) }}
+        <div class="container">
+            <div class="row">
+                {% for user in form.userInvites %}
+                    <div class="col-3">
+                        {{ form_label(user) }}
+                        {{ form_widget(user) }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Modifier</button>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

@@ -7,6 +7,7 @@ use App\Entity\Rooms;
 use App\Form\Admin\EmployeFormType;
 use App\Form\AnnonceFormType;
 use App\Form\CreateRoomFormType;
+use App\Form\EditReservationFormType;
 use App\Repository\AnnouncementRepository;
 use App\Repository\PostRepository;
 use App\Repository\ReservationRoomRepository;
@@ -157,7 +158,7 @@ final class AdministrationController extends AbstractController
             "reservations" => $reservations
         ]);
     }
-      #[Route('/reservations/delete{id}', name: 'app_delete_reservations', methods: ['GET','POST'])]
+    #[Route('/reservations/delete{id}', name: 'app_delete_reservations', methods: ['POST'])]
     public function deleteReservation(int $id, Request $request, ReservationRoomRepository $RRR, EntityManagerInterface $em): Response
     {
         $reservations = $RRR->find($id);
@@ -177,6 +178,49 @@ final class AdministrationController extends AbstractController
         $this->addFlash('success', 'Réservation supprimée avec succès.');
         return $this->redirectToRoute('app_reservations');
             
+        
+    }
+    #[Route('/reservations/edit{id}', name: 'app_edit_reservations', methods: ['GET','POST'])]
+    public function editReservation(int $id, Request $request, ReservationRoomRepository $RRR, EntityManagerInterface $em): Response
+    {
+        $allreservations = $RRR->findAll();
+        $reservations = $RRR->find($id);
+        $form = $this->createForm(EditReservationFormType::class, $reservations);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $timeStart = $reservations->getTimeStart();
+            $timeEnd = $reservations->getTimeEnd();
+            if ($timeStart > $timeEnd) {
+                $this->addFlash('error', 'L\'heure de fin doit être supérieure à l\'heure d\'arrivée.');
+                return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('app_reservations'));
+            }
+            if ((int) $timeStart->format("H") < 8 || (int) $timeEnd->format("H") > 23) {
+                $this->addFlash('error', 'Les heures doivent être comprises entre 8h et 23h.');
+                return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('app_reservations'));
+            }
+            if ((int) $timeStart->format("i") != 0 || (int) $timeEnd->format("i") != 0) {
+                $this->addFlash('error', 'Les minutes doivent être nuls.');
+                return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('app_reservations'));
+            }
+            foreach ($allreservations as $reservation) {
+                if ($reservation->getId() != $id) {
+                    if ($reservation->getReservedFor() == $reservations->getReservedFor()) {
+                        if ($reservation->getTimeStart() < $timeEnd && $reservation->getTimeEnd() > $timeStart) {
+                            $this->addFlash('error', 'Une reservation est déjà dans ce créneau.');
+                            return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('app_reservations'));
+                        }
+                    }
+                }
+            }
+            $em->persist($reservations);
+            $em->flush();
+            $this->addFlash('success', 'Réservation modifiée avec succès.');
+            return $this->redirectToRoute('app_reservations');
+        }
+        return $this->render('/administration/reservations/edit_reservations.html.twig',[
+            "form" => $form->createView(),
+        ]);
         
     }
 
@@ -219,10 +263,10 @@ final class AdministrationController extends AbstractController
 
     #[Route('/forum/subject/edit/{slug}', name: 'app_admin_forum_subject_edit', methods: ['GET', 'POST'])]
     public function forumSubjectEdit(
-    string $slug,
-    SubjectRepository $SR, 
-    Request $request, 
-    EntityManagerInterface $em
+        string $slug,
+        SubjectRepository $SR, 
+        Request $request, 
+        EntityManagerInterface $em
     ): Response
     {
         $subject = $SR->findOneBy(['slug' => $slug]);

@@ -28,4 +28,14 @@ final class WelcomeController extends AbstractController
             "reservations" => $reservations
         ]);
     }
+    #[Route('/welcome/confidential', name: 'app_welcome_confidential', methods: ['GET'])]
+    public function politiqueDeConfidentialite(): Response
+    {
+        return $this->render('/welcome/politique-confidentialite.html.twig');
+    }
+    #[Route('/welcome/mentions_legales', name: 'app_welcome_mentions', methods: ['GET'])]
+    public function mentionsLegales(): Response
+    {
+        return $this->render('/welcome/mentions-legales.html.twig');
+    }
 }
