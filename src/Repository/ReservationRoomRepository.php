@@ -29,6 +29,7 @@ class ReservationRoomRepository extends ServiceEntityRepository
             ->setParameter('date', $date)
             ->setParameter('timeStart', $timeStart)
             ->setParameter('timeEnd', $timeEnd)
+            ->setmaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
     }

@@ -1,17 +1,21 @@
 <template>
-    <h1 :class="{'blurred':modaleVisible}">Veuillez choisir votre salle et votre créneau :</h1>
+    <h1 :class="{'blurred':modaleVisible, 'blurred':modaleReservationVisible}" class="character_size_title">Veuillez choisir votre salle et votre créneau :</h1>
     <div>
-        <table :class="{'blurred':modaleVisible}" class="table table-light table-bordered align-middle">
+        <table :class="{'blurred':modaleVisible, 'blurred':modaleReservationVisible}" class="table table-sm table-light table-bordered align-middle">
             <thead>
                 <tr class="first_line">
-                    <th style="width: 15rem">Salle</th>
-                    <th v-for="heure in heures" :key="heure">{{ heure }}:00</th>
+                    <th class="salle_column_reservation">
+                        <div class="d-none d-lg-block">Salle</div>
+                        <div class="d-block d-lg-none character_size">S.</div>
+                    </th>
+                    <th v-for="heure in heures" :key="heure" class="d-lg-table-cell d-none"><div>{{ heure }}:00</div></th>
+                    <th v-for="heure in heures" :key="heure" class=" character_size d-table-cell d-lg-none"><div>{{ heure }}.</div></th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="salle in salles" :key="salle.id">
-                    <th>
-                        <div class="d-flex justify-content-between align-items-center h-auto">
+                    <th class="p-0 p-lg-2">
+                        <div class="justify-content-between align-items-center h-auto d-none d-lg-flex">
                             <div>N: {{ salle.roomNumber }}</div>
                             <div>
                                 <div>Taille: {{ salle.capacity }} places</div>
@@ -21,16 +25,24 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="d-flex flex-column justify-content-center align-items-center character_size d-lg-none">
+                            <div>N:{{ salle.roomNumber }}</div>
+                            <div class="d-flex flex-column justify-content-center align-items-center">
+                                <div>C.{{ salle.capacity }}</div>
+                                <div class="" v-if="salle.projector"><i class="fa-solid fa-video"></i></div>
+                                <div class="" v-if="salle.whiteboard"><i class="fa-solid fa-chalkboard"></i></div>
+                            </div>
+                        </div>
                     </th>
                     <td v-for="Cell in getCells(salle.id)" 
                     :key="Cell.heure" 
                     :class="Cell.reservation ? `reserved-${Cell.reservation.type}` : ''" 
                     :colspan="Cell.colspan" 
-                    @click="ouvrirModale(salle.roomNumber,salle.id, Cell.heure)">
+                    @click="Cell.reservation ? ouvrirModaleReservation(Cell.reservation) : ouvrirModale(salle.roomNumber, salle.id, Cell.heure)">
                         <div v-if="Cell.reservation">
                             <div class="text-secondary">
-                                <p class="m-auto">Réunion de "{{ Cell.reservation.name }}", de {{ Cell.reservation.timeStart }}h a {{ Cell.reservation.timeEnd }}h</p>
-                                <p class="m-auto">Fait par {{ users.find(user => user.id === Cell.reservation.user).firstName }} , {{ Cell.reservation.type }}</p>
+                                <p class="m-auto">Réunion de "{{ Cell.reservation.name }}", de {{ Cell.reservation.timeStart }} a {{ Cell.reservation.timeEnd }}</p>
+                                <p class="m-auto">Fait par {{ Cell.reservation.firstName }}{{ Cell.reservation.lastName }} , {{ Cell.reservation.type }}</p>
                             </div>
                         </div>
                         <div v-else>
@@ -48,14 +60,14 @@
                 <button class="btn btn-close" @click="fermerModale()"></button>
             </div>
             <hr>
-            <div class="container h-100">
-                <div class="row h-100">
-                    <div class="col-lg-7 col-12 bg-light p-3 rounded-5 d-flex flex-column justify-content-between h-100">
-                        <div class="mb-2">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-7 col-12 bg-light p-3 rounded-5 d-flex flex-column justify-content-between h-100 label_modale">
+                        <div class="mb-lg-2">
                             <label for="salle">Salle</label>
                             <input type="text" id="salle" class="input_modale" v-model="salleSelected" readonly>
                         </div>
-                        <div class="row mb-2">
+                        <div class="row mb-lg-2">
                             <div class="col-6">
                                 <label for="début">Début</label>
                                 <input type="text" id="début" class="input_modale" v-model="heureSelectedVisible" readonly>
@@ -69,11 +81,11 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="mb-2">
+                        <div class="mb-lg-2">
                             <label for="titre">Titre de la réunion</label>
                             <input type="text" id="titre" class="input_modale" v-model="nomDeRéunion">
                         </div>
-                        <div class="mb-2">
+                        <div class="mb-lg-2">
                             <label for="titre">Catégorie</label>
                             <select class="input_modale" v-model="typeDeRéunion">
                                 <option v-for="type in types" :key="type.value" :value="type.value">
@@ -98,12 +110,12 @@
                                 <button class="input_modale btn_size_equipment" @click="equipment.quantity++"><i class="fa-solid fa-plus"></i></button>
                             </div>
                         </div> -->
-                        <div class="mt-2 d-flex justify-content-center align-items-center">
+                        <div class="label_modale d-flex justify-content-center align-items-center mt-2 mt-lg-0">
                             <button class="btn btn-white" @click="fermerModale()">Annuler</button>
                             <button class="btn btn-success" @click="validerReservation()">Valider</button>
                         </div>
                     </div>
-                    <div class="col-lg-5 col-12 border border-light p-3 rounded-5">
+                    <div class="col-lg-5 col-12 border border-light invites-list p-3 rounded-5">
                         <div class="row">
                             <div class="col-4 d-flex flex-column justify-content-center align-items-center profile_name_size mb-2" 
                             v-for="utilisateur in utilisateurs" :key="utilisateur.id"
@@ -121,6 +133,18 @@
             </div>
         </div>
     </div>  
+    <div v-if="modaleReservationVisible" class="modale">
+        <div>
+            dazdazdazddaz
+        </div>
+        <div @click="fermerModaleReservation()">
+            {{ Cell.reservation.name }}
+            {{ Cell.reservation.timeStart }}
+            {{ Cell.reservation.timeEnd }}
+            {{ Cell.reservation.type }}
+            {{ Cell.reservation.user }}
+        </div>
+    </div>
 </template>
 
 <script setup>
@@ -162,6 +186,7 @@ const invités = ref([]);
 
 
 const modaleVisible = ref(false);
+const modaleReservationVisible = ref(false);
 
 function getReservationData(salleId, heure) {
     return reservations.find(reservation => reservation.roomId === salleId && 
@@ -197,6 +222,11 @@ function ouvrirModale(salle,salleId, heure) {
     document.querySelector('header').classList.add('darkened_blurred');
     document.querySelector('footer').classList.add('blurred');
 }
+function ouvrirModaleReservation(Cell) {
+    modaleReservationVisible.value = true
+    document.querySelector('header').classList.add('darkened_blurred');
+    document.querySelector('footer').classList.add('blurred');
+}
 function ajouterUtilisateur(utilisateur){
     const checkUser = invités.value.find(i => i.id === utilisateur.id);
     if (!checkUser) {
@@ -214,7 +244,11 @@ function fermerModale() {
     document.querySelector('header').classList.remove('darkened_blurred');
     document.querySelector('footer').classList.remove('blurred');
 }
-
+function fermerModaleReservation() {
+    modaleReservationVisible.value = false;
+    document.querySelector('header').classList.remove('darkened_blurred');
+    document.querySelector('footer').classList.remove('blurred');
+}
 async function validerReservation() {
     if (!heureSelected.value || 
     !heureFinSelected.value || 
@@ -249,5 +283,5 @@ async function validerReservation() {
                 alert(error.error);
             }
         }
-    }
+}
 </script>

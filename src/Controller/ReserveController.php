@@ -21,7 +21,7 @@ final class ReserveController extends AbstractController
     #[Route('/reservation', name: 'app_reserve')]
     public function index(UserRepository $UR, ReservationRoomRepository $RRR, RoomsRepository $RR): Response
     {
-        $users = $UR->findAll();
+        $users = $UR->findBy([], ['firstName' => 'ASC']);
         $usersData = array_map(function ($user) {
             return [
                 'id' => $user->getId(),
@@ -47,12 +47,12 @@ final class ReserveController extends AbstractController
 
         $reservationRoomsData = array_map(function ($reservationsRoom) {
             return [
-                'id' => $reservationsRoom->getId(),
                 'roomId' => $reservationsRoom->getRoom()->getId(),
                 'date' => $reservationsRoom->getReservedFor()->format('Y-m-d'),
                 'timeStart' => $reservationsRoom->getTimeStart()->format('H:i'),
                 'timeEnd' => $reservationsRoom->getTimeEnd()->format('H:i'),
-                'user' => $reservationsRoom->getUser()->getId(),
+                'firstName' => $reservationsRoom->getUser()->getFirstName(),
+                'lastName' => $reservationsRoom->getUser()->getLastName(),
                 'type' => $reservationsRoom->getType()->value,
                 'name' => $reservationsRoom->getName(),   
             ];
@@ -77,15 +77,23 @@ final class ReserveController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         if (!$this->isCsrfTokenValid('reservation', $request->headers->get('CSRF-Token'))) {
-            return $this->json(['error' => 'Invalid CSRF token'], 403);
+            return $this->json(['error' => 'Une erreur est survenue'], 403);
         }
 
         $room = $RR->find($data['roomId']);
+
         $timeStart = new \DateTime($data['timeStart']);
+        $minStart = new \DateTime("9:00");
+
         $timeEnd = new \DateTime($data['timeEnd']);
+        $maxEnd = new \DateTime("23:00");
+
         $date = new \DateTime('today', new \DateTimeZone('Europe/Paris'));
         $invitedUsers = $data['invitedUsers'];
 
+        if($timeStart >= $timeEnd || $timeStart < $minStart || $timeEnd > $maxEnd) { 
+            return $this->json(['error' => 'Une erreur est survenue sur les horaires'], 400);
+        }
         $conflict = $RRR->findConflict($room, $timeStart, $timeEnd, $date);
         if ($conflict) {
             return $this->json(['error' => 'Ce créneau est déjà réservé'], 409);
@@ -93,8 +101,9 @@ final class ReserveController extends AbstractController
 
         $user = $this->getUser();
         if (!$user instanceof User) {
-            throw $this->createAccessDeniedException();
+            return $this->json(['error' => 'Un problème est survenue'], 500);
         }
+
 
         $reservation = new ReservationRoom();
         $reservation->setUser($user);
